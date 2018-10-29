@@ -10,6 +10,8 @@
   "dependencies": {
     "express": "^4.12.3",
     "knex": "^0.15.2",
+    "mysql": "^2.16.0",
+    "object": "^0.1.1",
     "objection": "^1.4.0",
     "swagger-express-mw": "^0.1.0"
   },
