@@ -1,60 +1,94 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
+  title: Trivia OFB
 # during dev, should point to your local machine
-host: localhost:10010
-# basePath prefixes all resource paths 
-basePath: /
-# 
+host: localhost:10011
 schemes:
-  # tip: remove http to make production-grade
   - http
-  - https
-# format of bodies a client can send (Content-Type)
 consumes:
   - application/json
-# format of the responses to the client (Accepts)
 produces:
   - application/json
-paths:
-  /hello:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
-    get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
-      operationId: hello
-      parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
-          type: string
-      responses:
-        "200":
-          description: Success
-          schema:
-            # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
-  /swagger:
-    x-swagger-pipe: swagger_raw
-# complex objects have schema definitions
+basePath: /trivia
+
+
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
+  
+  QuestionInfo:
+    type: object
     properties:
-      message:
-        type: string
-  ErrorResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
+      content:
+        type: [string, 'null']
+      timeToEnd:
+        type: integer
+        description: minutes 'till end
+  
+  Winners:
+    type: array
+    items:
+      type: string
+    
+paths:
+  
+  /question:
+    get:
+      summary: An object with content and time to end.
+      description: Retrieves the question for the trivia with the number of minutes before the end.
+      
+      responses:
+        
+        200:
+          schema:
+            $ref: "#/definitions/QuestionInfo"
+          description: A JSON object with question and timeToEnd
+  
+  /winners:
+    get:
+      summary: Retrieves the names of the previous trivia winners.
+      description: Returns the names of the winners in an array
+      
+      responses:
+        
+        200:
+          schema:
+            $ref: "#/definitions/Winners"
+          description: A JSON object with question and timeToEnd
+  
+  /answer:
+    post:
+      description: Allows the users to send the answer for the trivia alongside their personal info
+      
+      parameters: 
+        - in: header
+          name: name
+          type: string
+          required: true
+        - in: header
+          name: lastName
+          type: string
+          required: true
+        - in: header
+          name: email
+          type: string
+          required: true
+        - in: header
+          name: cellphone
+          type: string
+          required: true
+        - in: header
+          name: allowContact
+          type: string
+          required: true
+        - in: header
+          name: answer
+          type: string
+          required: true
+      
+      responses:
+        200:
+          description: ok
+      
+      
+        
+    

@@ -14,10 +14,10 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   // install middleware
   swaggerExpress.register(app);
 
-  var port = process.env.PORT || 10010;
+  var port = process.env.PORT || 10011;
   app.listen(port);
 
-  if (swaggerExpress.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
+  if (swaggerExpress.runner.swagger.paths['/trivia']) {
+    console.log('\n\nServer up and running in http://127.0.0.1:' + port + '\n\n');
   }
 });
