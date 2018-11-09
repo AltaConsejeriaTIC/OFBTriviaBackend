@@ -10,6 +10,7 @@ exports.up = function(knex, Promise) {
 			table.string('citizen_last_name');
 			table.boolean('citizen_allows_contact');
 			table.string('citizen_cellphone').unique();
+			table.enu('contactMedia', ['email', 'SMS']);
 		}),
 		knex.schema.createTable('questions', table => {
 			table.increments('question_id').primary().unique();
@@ -28,7 +29,7 @@ exports.up = function(knex, Promise) {
 			table.string('answer_content');
 			table.decimal('answer_score');
 			table.boolean('answer_winner');
-			table.timestamp('answer_date').defaultTo(knex.fn.now());
+			table.timestamp('answer_date').defaultTo(knex.fn.now()).notNullable();
 		}),
 		knex.schema.
 		createTable('admins', table => {
