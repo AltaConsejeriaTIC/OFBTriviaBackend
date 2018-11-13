@@ -20,9 +20,8 @@ definitions:
     properties:
       content:
         type: [string, 'null']
-      timeToEnd:
-        type: integer
-        description: minutes 'till end
+      endDate:
+        type: [string, 'null']
   
   Winners:
     type: array
@@ -32,9 +31,12 @@ definitions:
 paths:
   
   /question:
+    x-swagger-router-controller: questionController
+    
     get:
+      operationId: getTriviaInfo
       summary: An object with content and time to end.
-      description: Retrieves the question for the trivia with the number of minutes before the end.
+      description: Retrieves the questionof the trivia and the date that it ends.
       
       responses:
         
@@ -47,6 +49,11 @@ paths:
     get:
       summary: Retrieves the names of the previous trivia winners.
       description: Returns the names of the winners in an array
+      
+      parameters:
+        - in: header
+          name: endDate
+          type: string
       
       responses:
         

@@ -1,6 +1,6 @@
 'use strict';
 
-const Model = require('../../config/triviaDBConnection').Model;
+const Model = require('../../config/triviaDBConnection');
 
 
 class Admin extends Model{	
