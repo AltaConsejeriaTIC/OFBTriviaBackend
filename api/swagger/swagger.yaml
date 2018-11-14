@@ -24,9 +24,14 @@ definitions:
         type: [string, 'null']
   
   Winners:
-    type: array
-    items:
-      type: string
+    type: object
+    properties:
+      date:
+        type: string
+      winners:
+        type: array
+        items:
+          type: string
     
 paths:
   
