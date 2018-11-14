@@ -21,8 +21,9 @@ class Citizen extends Model{
 				email: {type: 'string'},
 				name: {type: 'string'},
 				lastName: {type: 'string'},
-				allowsGetInfo: {type: 'boolean'},
-				cellphone: {type: 'string'}
+				allowsContact: {type: 'boolean'},
+				cellphone: {type: 'string'},
+				contactMedia: {type: 'string'}
 			}
 		};
 	}

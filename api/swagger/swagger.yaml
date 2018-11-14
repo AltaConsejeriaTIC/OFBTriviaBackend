@@ -51,7 +51,7 @@ paths:
           description: A JSON object with question and timeToEnd
   
   /winners:
-    x-swagger-router-controller: winnersController
+    x-swagger-router-controller: citizenController
     
     get:
       operationId: getWinners
@@ -66,7 +66,10 @@ paths:
           description: A JSON object with question and timeToEnd
   
   /answer:
+    x-swagger-router-controller: answerController
+    
     post:
+      operationId: uploadAnswer
       description: Allows the users to send the answer for the trivia alongside their personal info
       
       parameters: 
@@ -88,6 +91,10 @@ paths:
           required: true
         - in: header
           name: allowContact
+          type: boolean
+          required: true
+        - in: header
+          name: contactPreference
           type: string
           required: true
         - in: header

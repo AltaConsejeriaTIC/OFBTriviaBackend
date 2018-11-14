@@ -23,6 +23,19 @@ function getWinners(req, res) {
   }));
 }
 
+function insertCitizen(name, lastName, email, cellphone, contactMedia, allowsContact){
+  
+  return Citizen.query().insert({
+				email: email,
+				name: name,
+				lastName: lastName,
+				allowsContact: allowsContact,
+				cellphone: cellphone,
+				contactMedia: contactMedia
+  });
+}
+
 module.exports = {
-  getWinners: getWinners
+  getWinners: getWinners,
+  insertCitizen: insertCitizen
 };
