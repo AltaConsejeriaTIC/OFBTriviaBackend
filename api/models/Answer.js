@@ -41,7 +41,7 @@ class Answer extends Model{
 			
 			citizen: {
 				relation: Model.BelongsToOneRelation,
-				modelClass: __dirname + '/Question',
+				modelClass: __dirname + '/Citizen',
 				join: {
 					from: 'answers.answer_citizen',
 					to: 'citizens.citizen_id'

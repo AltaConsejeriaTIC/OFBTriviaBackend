@@ -46,14 +46,12 @@ paths:
           description: A JSON object with question and timeToEnd
   
   /winners:
+    x-swagger-router-controller: winnersController
+    
     get:
+      operationId: getWinners
       summary: Retrieves the names of the previous trivia winners.
       description: Returns the names of the winners in an array
-      
-      parameters:
-        - in: header
-          name: endDate
-          type: string
       
       responses:
         
