@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  version: "0.0.1"
+  version: 0.0.1
   title: Trivia OFB
 # during dev, should point to your local machine
 host: localhost:10011
@@ -32,6 +32,22 @@ definitions:
         type: array
         items:
           type: string
+  
+  CitizenAnswer:
+    type: object
+    properties:
+      name:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      cellphone:
+        type: string
+      contactMedia:
+        type: string
+      answer:
+        type: string
     
 paths:
   
@@ -72,40 +88,15 @@ paths:
       operationId: uploadAnswer
       description: Allows the users to send the answer for the trivia alongside their personal info
       
-      parameters: 
-        - in: header
-          name: name
-          type: string
+      parameters:
+        - in: body
+          name: citizenAnswer
+          type: object
           required: true
-        - in: header
-          name: lastName
-          type: string
-          required: true
-        - in: header
-          name: email
-          type: string
-          required: true
-        - in: header
-          name: cellphone
-          type: string
-          required: true
-        - in: header
-          name: allowContact
-          type: boolean
-          required: true
-        - in: header
-          name: contactPreference
-          type: string
-          required: true
-        - in: header
-          name: answer
-          type: string
-          required: true
+          description: The info of the citizen with the answer
+          schema:
+              $ref: "#/definitions/CitizenAnswer"
       
       responses:
         200:
           description: ok
-      
-      
-        
-    
