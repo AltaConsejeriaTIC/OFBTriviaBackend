@@ -10,23 +10,6 @@ class Question extends Model{
 		return 'questions';
 	}
 	
-	static get jsonSchema(){
-		
-		return {
-			type: 'object',
-			required: ['content', 'startDate', 'endDate', 'realAnswer'],
-			
-			properties: {
-				id: {type: 'integer'},
-				content: {type: 'string'},
-				startDate: {type: 'string'},
-				endDate: {type: 'string'},
-				realAnswer: {type: 'string'},
-				publishedDate: {type: 'string'}
-			}
-		};
-	}
-	
 	static get relationMappings(){
 		
 		return {

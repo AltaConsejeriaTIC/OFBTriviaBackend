@@ -1,13 +1,13 @@
 'use strict';
 
-const Question = require('../models/Question');
+const queryHelpers = require('../helpers/queryHelpers');
 
 function getTriviaInfo(req, res) {
-  Question.
-  query().
-  select('question_content as content', 'question_end_date as endDate').
-  whereRaw('question_start_date <= CURDATE() and question_end_date > CURDATE()').
-  then(question => res.json(question[0]));
+  queryHelpers.getCurrentQuestion.
+  then(question => res.json({
+    content: question[0].content,
+    endDate: question[0].endDate
+  }));
 }
 
 module.exports = {

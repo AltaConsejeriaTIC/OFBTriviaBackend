@@ -44,7 +44,7 @@ definitions:
         type: string
       cellphone:
         type: string
-      contactMedia:
+      contactPreference:
         type: string
       answer:
         type: string
@@ -91,7 +91,6 @@ paths:
       parameters:
         - in: body
           name: citizenAnswer
-          type: object
           required: true
           description: The info of the citizen with the answer
           schema:
@@ -99,4 +98,6 @@ paths:
       
       responses:
         200:
-          description: ok
+          description: request fulfilled
+          schema:
+            type: string

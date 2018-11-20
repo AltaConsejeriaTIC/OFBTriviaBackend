@@ -10,23 +10,6 @@ class Answer extends Model{
 		return 'answers';
 	}
 	
-	static get jsonSchema(){
-		
-		return {
-			type: 'object',
-			required: ['citizenId', 'questionId', 'content','date'],
-			
-			properties: {
-				citizenId: {type: 'string'},
-				questionId: {type: 'string'},
-				content: {type: 'string'},
-				date: {type: 'string'},
-				score: {type: 'number'},
-				isAWinner: {type: ['boolean', 'null']}
-			}
-		};
-	}
-	
 	static get relationMappings(){
 		
 		return {

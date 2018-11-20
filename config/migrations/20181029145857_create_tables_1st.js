@@ -7,7 +7,6 @@ exports.up = function(knex, Promise) {
 			table.string('citizen_email').notNullable().unique();
 			table.string('citizen_name').notNullable();
 			table.string('citizen_last_name').notNullable();
-			table.boolean('citizen_allows_contact');
 			table.string('citizen_cellphone').notNullable().unique();
 			table.enu('citizen_contact_media', ['email', 'SMS']).notNullable();
 		}),

@@ -17,7 +17,7 @@ SwaggerExpress.create(config, function(err, swaggerExpress) {
   var port = process.env.PORT || 10011;
   app.listen(port);
 
-  if (swaggerExpress.runner.swagger.paths['/trivia']) {
+  if (swaggerExpress.runner.swagger.paths['/question']) {
     console.log('\n\nServer up and running in http://127.0.0.1:' + port + '\n\n');
   }
 });
