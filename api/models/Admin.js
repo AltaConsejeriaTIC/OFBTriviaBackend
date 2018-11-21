@@ -9,22 +9,6 @@ class Admin extends Model{
 		
 		return 'admins';
 	}
-	
-	static get jsonSchema(){
-		
-		return {
-			type: 'object',
-			required: ['email', 'name', 'lastName'],
-			
-			properties: {
-				id: {type: 'integer'},
-				email: {type: 'string'},
-				name: {type: 'string'},
-				lastName: {type: 'string'},
-				password: {type: 'string'}
-			}
-		};
-	}
 }
 
 

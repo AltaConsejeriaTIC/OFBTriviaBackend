@@ -52,7 +52,7 @@ definitions:
   Credentials:
     type: object
     properties:
-      email:
+      userName:
         type: string
       password:
         type: string
@@ -144,8 +144,10 @@ paths:
             $ref: "#/definitions/ResponseMessage"
   
   /login:
+    x-swagger-router-controller: adminController
     
     post:
+      operationId: login
       description: login for admin
       tags:
         - admin site
@@ -170,8 +172,10 @@ paths:
             $ref: "#/definitions/ResponseMessage"
   
   /register:
+    x-swagger-router-controller: adminController
     
     post:
+      operationId: registerAdmin
       description: registers a new admin
       tags:
         - admin site

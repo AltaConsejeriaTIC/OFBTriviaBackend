@@ -8,7 +8,7 @@ function validateCryptedPassword(plainText, password, res){
 	bcrypt.compare(plainText, password, function(err, compareResult) {
 		
 		if(compareResult)
-			res.status(200).send('login successful');
+			res.status(200).send({message: "wrong password"});
 		
 		else
 			res.status(401).send({message: "wrong password"});
@@ -34,8 +34,8 @@ function registerAdmin(req, res){
 	Admin.query().
   insert(helpers.formatAdminData(req.body)).
   then(admin => {
-    
-    if(admin[0])
+    console.log(admin);
+    if(admin)
       res.status(201).send({message: "Admin created."});
     
     else

@@ -31,8 +31,8 @@ exports.up = function(knex, Promise) {
 		}),
 		knex.schema.createTable('admins', table => {
 			table.increments('admin_id').primary().unique();
-			table.string('admin_account_name');
-			table.string('admin_email').notNullable();
+			table.string('admin_account_name').notNullable().unique();
+			table.string('admin_email').notNullable().unique();
 			table.string('admin_name').notNullable();
 			table.string('admin_last_name').notNullable();
 			table.string('admin_password').notNullable();
