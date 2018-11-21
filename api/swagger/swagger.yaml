@@ -62,7 +62,23 @@ definitions:
     properties:
       messeage:
         type: string
-    
+  
+  Admin:
+    type: object
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+      active:
+        type: string
+      userName:
+        type: string
+  
 paths:
   
   /question:
@@ -72,6 +88,8 @@ paths:
       operationId: getTriviaInfo
       summary: An object with content and time to end.
       description: Retrieves the questionof the trivia and the date that it ends.
+      tags:
+        - mobile app
       
       responses:
         
@@ -87,6 +105,8 @@ paths:
       operationId: getWinners
       summary: Retrieves the names of the previous trivia winners.
       description: Returns the names of the winners in an array
+      tags:
+        - mobile app
       
       responses:
         
@@ -101,6 +121,8 @@ paths:
     post:
       operationId: uploadAnswer
       description: Allows the users to send the answer for the trivia alongside their personal info
+      tags:
+        - mobile app
       
       parameters:
         - in: body
@@ -125,6 +147,8 @@ paths:
     
     post:
       description: login for admin
+      tags:
+        - admin site
     
       parameters:
         - in: body
@@ -137,8 +161,35 @@ paths:
         
         200:
           description: logued in
+          schema:
+            $ref: "#/definitions/ResponseMessage"
         
         401:
           description: wrong credentials
           schema:
-            $ref: "#/definitions/Credentials"
+            $ref: "#/definitions/ResponseMessage"
+  
+  /register:
+    
+    post:
+      description: registers a new admin
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: admin
+          schema:
+            $ref: "#/definitions/Admin"
+      
+      responses:
+        
+        201:
+          description: ok
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+        
+        default:
+          description: An error ocurred
+          schema:
+            $ref: "#/definitions/ResponseMessage"

@@ -1,7 +1,8 @@
 'use strict';
 
-const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
+const Admin = require('../models/Admin');
+const helpers = require('../helpers/helpers');
 
 function validateCryptedPassword(plainText, password, res){
 	bcrypt.compare(plainText, password, function(err, compareResult) {
@@ -29,6 +30,21 @@ function validateLoginCredentials(req, res){
 	});
 }
 
+function registerAdmin(req, res){
+	Admin.query().
+  insert(helpers.formatAdminData(req.body)).
+  then(admin => {
+    
+    if(admin[0])
+      res.status(201).send({message: "Admin created."});
+    
+    else
+      res.status(500).send({message: "Error on creating admin"});
+  }).
+  catch(e => console.log(e));
+}
+
 module.exports = {
-	login: validateLoginCredentials
+	login: validateLoginCredentials,
+  registerAdmin: registerAdmin
 };

@@ -12,7 +12,7 @@ function insertAnswer(citizenId, questionId, answer, citizenMessage, res){
 		answer_citizen: citizenId,
 		answer_content: answer
 	}).
-	then(() => res.json(`answer created, ${citizenMessage}`)).
+	then(() => res.status(200)({message: `answer created, ${citizenMessage}`})).
 	catch(e => console.log(e));
 }
 

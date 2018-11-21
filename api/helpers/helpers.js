@@ -1,5 +1,8 @@
 'use strict';
 
+const bcrypt = require('bcrypt');
+const constants = require('../helpers/constants');
+
 function formatRawCitizenData(rawData){
 	
 	return {
@@ -11,6 +14,18 @@ function formatRawCitizenData(rawData){
 	};
 }
 
+function formatAdminData(rawData){
+	var formatedAdmin = {};
+	
+	for (const key in rawData)
+		formatedAdmin[constants.adminFields[key]] = (key != "password")? rawData[key]
+					: bcrypt.hashSync(rawData[key], 10);
+		
+	
+	return formatedAdmin;
+}
+
 module.exports = {
-	formatRawCitizenData: formatRawCitizenData
+	formatRawCitizenData: formatRawCitizenData,
+	formatAdminData: formatAdminData
 };
