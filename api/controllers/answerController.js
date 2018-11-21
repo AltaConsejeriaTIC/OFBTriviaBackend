@@ -67,15 +67,14 @@ function processCitizen(params, questionId, res){
 }
 
 function uploadAnswer(req, res){
-	var params = req.body;
 	queryHelpers.getCurrentQuestion.
 	then(question => {
 		
 		if (question[0])
-			processCitizen(params, question[0].id, res);
+			processCitizen(req.body, question[0].id, res);
 		
 		else 
-			res.json('there\'s no trivia at the moment');
+			res.status(503).send({message: "there's no trivia at the moment"});
 	});
 }
 

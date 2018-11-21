@@ -31,10 +31,12 @@ exports.up = function(knex, Promise) {
 		}),
 		knex.schema.createTable('admins', table => {
 			table.increments('admin_id').primary().unique();
+			table.string('admin_account_name');
 			table.string('admin_email').notNullable();
 			table.string('admin_name').notNullable();
 			table.string('admin_last_name').notNullable();
 			table.string('admin_password').notNullable();
+			table.boolean('admin_is_active').notNullable().defaultTo(true);
 		})
 	]);
 };

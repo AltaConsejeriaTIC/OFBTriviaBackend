@@ -48,6 +48,20 @@ definitions:
         type: string
       answer:
         type: string
+  
+  Credentials:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+  
+  ResponseMessage:
+    type: object
+    properties:
+      messeage:
+        type: string
     
 paths:
   
@@ -62,9 +76,9 @@ paths:
       responses:
         
         200:
+          description: A JSON object with question and timeToEnd
           schema:
             $ref: "#/definitions/QuestionInfo"
-          description: A JSON object with question and timeToEnd
   
   /winners:
     x-swagger-router-controller: citizenController
@@ -101,3 +115,30 @@ paths:
           description: request fulfilled
           schema:
             type: string
+        
+        503:
+          description: there's no trivia at the moment
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /login:
+    
+    post:
+      description: login for admin
+    
+      parameters:
+        - in: body
+          name: credentials
+          required: true
+          schema:
+            $ref: "#/definitions/Credentials"
+      
+      responses:
+        
+        200:
+          description: logued in
+        
+        401:
+          description: wrong credentials
+          schema:
+            $ref: "#/definitions/Credentials"
