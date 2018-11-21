@@ -164,8 +164,11 @@ paths:
         200:
           description: logued in
           schema:
-            $ref: "#/definitions/ResponseMessage"
-        
+            type: object
+            properties:
+              id:
+                type: integer
+      
         401:
           description: wrong credentials
           schema:

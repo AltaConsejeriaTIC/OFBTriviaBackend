@@ -56,26 +56,18 @@ function processCitizen(params, questionId, res){
 	select().
 	where('citizen_email', params.email).
 	orWhere('citizen_cellphone', params.cellphone).
-	then(citizen => {
-		
-		if (citizen[0])
-			updateCitizen(citizen[0].citizen_id, params, questionId, res);
-		
-		else
-			insertCitizen(params, questionId, res);
-	});
+	then(citizen =>
+		helpers.runFunctionByCondition(Boolean(citizen[0]), updateCitizen,
+																	 [citizen[0].citizen_id, params, questionId, res],
+																	 insertCitizen, [params, questionId, res]));
 }
 
 function uploadAnswer(req, res){
 	queryHelpers.getCurrentQuestion.
-	then(question => {
-		
-		if (question[0])
-			processCitizen(req.body, question[0].id, res);
-		
-		else 
-			res.status(503).send({message: "there's no trivia at the moment"});
-	});
+	then(question =>
+		helpers.runFunctionByCondition(Boolean(question[0]), processCitizen,
+																	 [req.body, question[0].id, res], res.status(503).send,
+																	 [{message: "there's no trivia at the moment"}]));
 }
 
 module.exports = {

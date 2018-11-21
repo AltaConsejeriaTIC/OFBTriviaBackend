@@ -3,6 +3,22 @@
 const bcrypt = require('bcrypt');
 const constants = require('../helpers/constants');
 
+function createConditionedElements(ifTrueElement, ifFalseElement){
+	
+	return {
+		true: ifTrueElement,
+		false: ifFalseElement
+	};
+}
+
+function runFunctionByCondition(condition, ifTrueFunction, ifTrueArgs,
+																ifFalseFunction, ifFalseArgs){
+	var functions = createConditionedElements(ifTrueFunction, ifFalseFunction);
+	var args = createConditionedElements(ifTrueArgs, ifFalseArgs);
+	
+	return functions[condition](...args[condition]);
+}
+
 function formatRawCitizenData(rawData){
 	
 	return {
@@ -17,7 +33,7 @@ function formatRawCitizenData(rawData){
 function formatAdminData(rawData){
 	var formatedAdmin = {};
 	
-	for (const key in rawData)
+	for (const key of Object.keys(rawData))
 		formatedAdmin[constants.adminFields[key]] = (key != "password")? rawData[key]
 					: bcrypt.hashSync(rawData[key], 10);
 		
@@ -27,5 +43,6 @@ function formatAdminData(rawData){
 
 module.exports = {
 	formatRawCitizenData: formatRawCitizenData,
-	formatAdminData: formatAdminData
+	formatAdminData: formatAdminData,
+	runFunctionByCondition: runFunctionByCondition
 };
