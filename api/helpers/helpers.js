@@ -36,7 +36,6 @@ function formatAdminData(rawData){
 	for (const key of Object.keys(rawData))
 		formatedAdmin[constants.adminFields[key]] = (key != "password")? rawData[key]
 					: bcrypt.hashSync(rawData[key], 10);
-		
 	
 	return formatedAdmin;
 }
