@@ -23,6 +23,18 @@ definitions:
       endDate:
         type: [string, 'null']
   
+  Question:
+    type: object
+    properties:
+      content:
+        type: string
+      answer:
+        type: string
+      startDate:
+        type: string
+      endDate:
+        type: string
+  
   Winners:
     type: object
     properties:
@@ -188,6 +200,33 @@ paths:
           name: admin
           schema:
             $ref: "#/definitions/Admin"
+      
+      responses:
+        
+        201:
+          description: ok
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+        
+        default:
+          description: An error ocurred
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /newQuestion:
+    x-swagger-router-controller: questionController
+    
+    post:
+      operationId: createQuestion
+      description: creates a new question
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: admin
+          schema:
+            $ref: "#/definitions/Question"
       
       responses:
         
