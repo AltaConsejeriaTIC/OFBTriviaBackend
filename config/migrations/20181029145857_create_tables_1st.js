@@ -17,6 +17,8 @@ exports.up = function(knex, Promise) {
 			table.date('question_start_date').notNullable();
 			table.date('question_end_date').notNullable();
 			table.string('question_real_answer').notNullable();
+			table.string('question_status').notNullable().defaultTo('Programada');
+			table.boolean('question_active').notNullable().defaultTo(true);
 		}),
 		knex.schema.createTable('answers', table => {
 			table.primary(['answer_citizen', 'answer_question']);
