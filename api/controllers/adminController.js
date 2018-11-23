@@ -34,7 +34,7 @@ function registerAdmin(req, res){
 	Admin.query().
   insert(helpers.formatAdminData(req.body)).
   then(admin => {
-    console.log(admin);
+		
     if(admin)
       res.status(201).send({message: "Admin created."});
     

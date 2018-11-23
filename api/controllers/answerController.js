@@ -78,6 +78,19 @@ function uploadAnswer(req, res){
 	});
 }
 
+function getAnswersList(req, res){
+	Answer.query().
+	select('answer_citizen as userId', 'answer_content as content',
+				 'answer_date as date', 'answer_score as score').
+	where('answer_question', req.swagger.params.questionId.value).
+	orderBy('date').
+	then(answers => {
+		answers.map(answer => answer.date = answer.date.toISOString().split('T')[0]);
+		res.status(200).send(answers);
+	});
+}
+
 module.exports = {
-	uploadAnswer: uploadAnswer
+	uploadAnswer: uploadAnswer,
+	getAnswersList: getAnswersList
 };
