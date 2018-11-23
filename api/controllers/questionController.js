@@ -3,15 +3,7 @@
 const queryHelpers = require('../helpers/queryHelpers');
 const Question = require('../models/Question');
 const constants = require('../helpers/constants');
-
-function getTriviaInfo(req, res) {
-  queryHelpers.getCurrentQuestion.
-  then(question => res.json({
-    content: question[0].content,
-    endDate: question[0].endDate
-  }));
-}
-
+const knex = require('../../config/triviaDBConnection').knex;
 
 const comparators = {
   '>': (leftElement, rightElement) => leftElement > rightElement,
@@ -20,6 +12,14 @@ const comparators = {
 const stringDateTime = (date) => (new Date(date)).getTime();
 const daysDiff = (oldTime, newTime) => Math.abs(stringDateTime(oldTime) -
                                                 stringDateTime(newTime))/86400000;
+
+function getTriviaInfo(req, res) {
+  queryHelpers.getCurrentQuestion.
+  then(question => res.json({
+    content: question[0].content,
+    endDate: question[0].endDate
+  }));
+}
 
 function validateDatesIntersections(booleanOperator, oldStartDate, oldEndDate,
                                     newStartDate, newEndDate){
@@ -76,7 +76,6 @@ function insertQuestion(question, res){
       res.status(500).send({message: "an error ocurred"});
   }).
   catch(e => console.log(e));
-  
 }
 
 function createQuestion(req, res){
@@ -93,7 +92,28 @@ function createQuestion(req, res){
   validateQuestionDates(question, questionDates, res);
 }
 
+function getQuestionsList(req, res){
+  const page = req.swagger.params.page.value || 1;
+  console.log("uno: "+(constants.questionsPerPage*(page -1) + 1));
+  console.log("dos: "+page*constants.questionsPerPage);
+  var q = Question.query().
+  select('question_id as id', 'question_content as content',
+         'question_created_date as startDate',
+         'question_end_date as endDate',
+         'question_status as status').
+  whereRaw("" +
+           (!req.swagger.params.lastId)? "true" :
+           knex.raw("id > ?", req.swagger.params.lastId.value)).
+  limit(constants.questionsPerPage).
+  offset((constants.questionsPerPage*(page -1) + 1)).
+  orderBy('endDate');
+  console.log(q.toString());
+  q.then(questions => {
+    res.status(200).send(questions);});
+}
+
 module.exports = {
   getTriviaInfo: getTriviaInfo,
-  createQuestion: createQuestion
+  createQuestion: createQuestion,
+  getQuestionsList: getQuestionsList
 };

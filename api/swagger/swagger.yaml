@@ -86,12 +86,31 @@ definitions:
         type: string
       date:
         type: string
-        #format: date
+        format: date-time
       userId: 
         type: integer
       score: 
         type: number
         format: float
+  
+  Question:
+    type: object
+    properties:
+      content:
+        type: [string, 'null']
+      endDate:
+        type: string
+        format: date-time
+      startDate:
+        type: string
+        format: date-time
+      answer:
+        type: string
+      status:
+        type: string
+      active:
+        type: boolean
+      
   
 paths:
   
@@ -225,6 +244,7 @@ paths:
         - in: query
           name: questionId
           type: integer
+          required: true
       
       responses:
         200:
@@ -233,3 +253,28 @@ paths:
             type: array
             items:
               $ref: "#/definitions/AnswerInfo"
+  
+  /questions-list:
+    x-swagger-router-controller: questionController
+  
+    get:
+      operationId: getQuestionsList
+      description: Retrieves the answers from the users for the given question
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: lastId
+          type: integer
+        - in: query
+          name: page
+          type: string
+      
+      responses:
+        200:
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Question"

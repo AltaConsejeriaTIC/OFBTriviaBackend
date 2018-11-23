@@ -84,10 +84,7 @@ function getAnswersList(req, res){
 				 'answer_date as date', 'answer_score as score').
 	where('answer_question', req.swagger.params.questionId.value).
 	orderBy('date').
-	then(answers => {
-		answers.map(answer => answer.date = answer.date.toISOString().split('T')[0]);
-		res.status(200).send(answers);
-	});
+	then(answers => res.status(200).send(answers));
 }
 
 module.exports = {
