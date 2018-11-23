@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  version: "0.0.1"
+  version: 0.0.1
   title: Trivia OFB
 # during dev, should point to your local machine
 host: localhost:10011
@@ -20,33 +20,107 @@ definitions:
     properties:
       content:
         type: [string, 'null']
-      timeToEnd:
-        type: integer
-        description: minutes 'till end
+      endDate:
+        type: [string, 'null']
   
   Winners:
-    type: array
-    items:
-      type: string
-    
+    type: object
+    properties:
+      date:
+        type: string
+      winners:
+        type: array
+        items:
+          type: string
+  
+  CitizenAnswer:
+    type: object
+    properties:
+      name:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      cellphone:
+        type: string
+      contactPreference:
+        type: string
+      answer:
+        type: string
+  
+  Credentials:
+    type: object
+    properties:
+      userName:
+        type: string
+      password:
+        type: string
+  
+  ResponseMessage:
+    type: object
+    properties:
+      messeage:
+        type: string
+  
+  Admin:
+    type: object
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      lastName:
+        type: string
+      userName:
+        type: string
+      password:
+        type: string
+      active:
+        type: string
+  
+  AnswerInfo:
+    type: object
+    properties:
+      content:
+        type: string
+      date:
+        type: string
+        #format: date
+      userId: 
+        type: integer
+      score: 
+        type: number
+        format: float
+  
 paths:
   
   /question:
+    x-swagger-router-controller: questionController
+    
     get:
+      operationId: getTriviaInfo
       summary: An object with content and time to end.
-      description: Retrieves the question for the trivia with the number of minutes before the end.
+      description: Retrieves the questionof the trivia and the date that it ends.
+      tags:
+        - mobile app
       
       responses:
         
         200:
+          description: A JSON object with question and timeToEnd
           schema:
             $ref: "#/definitions/QuestionInfo"
-          description: A JSON object with question and timeToEnd
   
   /winners:
+    x-swagger-router-controller: citizenController
+    
     get:
+      operationId: getWinners
       summary: Retrieves the names of the previous trivia winners.
       description: Returns the names of the winners in an array
+      tags:
+        - mobile app
       
       responses:
         
@@ -56,39 +130,106 @@ paths:
           description: A JSON object with question and timeToEnd
   
   /answer:
+    x-swagger-router-controller: answerController
+    
     post:
+      operationId: uploadAnswer
       description: Allows the users to send the answer for the trivia alongside their personal info
+      tags:
+        - mobile app
       
-      parameters: 
-        - in: header
-          name: name
-          type: string
+      parameters:
+        - in: body
+          name: citizenAnswer
           required: true
-        - in: header
-          name: lastName
-          type: string
+          description: The info of the citizen with the answer
+          schema:
+              $ref: "#/definitions/CitizenAnswer"
+      
+      responses:
+        200:
+          description: request fulfilled
+          schema:
+            type: string
+        
+        503:
+          description: there's no trivia at the moment
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /login:
+    x-swagger-router-controller: adminController
+    
+    post:
+      operationId: login
+      description: login for admin
+      tags:
+        - admin site
+    
+      parameters:
+        - in: body
+          name: credentials
           required: true
-        - in: header
-          name: email
-          type: string
-          required: true
-        - in: header
-          name: cellphone
-          type: string
-          required: true
-        - in: header
-          name: allowContact
-          type: string
-          required: true
-        - in: header
-          name: answer
-          type: string
-          required: true
+          schema:
+            $ref: "#/definitions/Credentials"
+      
+      responses:
+        
+        200:
+          description: logued in
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+        
+        401:
+          description: wrong credentials
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /register:
+    x-swagger-router-controller: adminController
+    
+    post:
+      operationId: registerAdmin
+      description: registers a new admin
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: admin
+          schema:
+            $ref: "#/definitions/Admin"
+      
+      responses:
+        
+        201:
+          description: ok
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+        
+        default:
+          description: An error ocurred
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /users-answers:
+    x-swagger-router-controller: answerController
+  
+    get:
+      operationId: getAnswersList
+      description: Retrieves the answers from the users for the given question
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: questionId
+          type: integer
       
       responses:
         200:
           description: ok
-      
-      
-        
-    
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/AnswerInfo"

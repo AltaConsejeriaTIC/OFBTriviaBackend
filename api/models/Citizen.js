@@ -1,6 +1,6 @@
 'use strict';
 
-const Model = require('../../config/triviaDBConnection').Model;
+const Model = require('../../config/triviaDBConnection');
 
 
 class Citizen extends Model{
@@ -8,23 +8,6 @@ class Citizen extends Model{
 	static get tableName(){
 		
 		return 'citizens';
-	}
-	
-	static get jsonSchema(){
-		
-		return {
-			type: 'object',
-			required: ['email', 'name', 'lastName', 'cellPhone'],
-			
-			properties: {
-				id: {type: 'integer'},
-				email: {type: 'string'},
-				name: {type: 'string'},
-				lastName: {type: 'string'},
-				allowsGetInfo: {type: 'boolean'},
-				cellphone: {type: 'string'}
-			}
-		};
 	}
 	
 	static get relationMappings(){
