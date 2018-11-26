@@ -1,9 +1,8 @@
 'use strict';
 
 const Answer = require('../models/Answer');
-const Citizen = require('../models/Citizen');
+const processCitizen = require('./citizenController').processCitizen;
 const queryHelpers = require('../helpers/queryHelpers');
-const helpers = require('../helpers/helpers');
 
 function insertAnswer(citizenId, questionId, answer, citizenMessage, res){
 	Answer.query().
@@ -36,42 +35,12 @@ function manageAnswer(citizenId, questionId, answerContent, citizenMessage, res)
 	});
 }
 
-function updateCitizen(citizenId, params, questionId, res){
-	Citizen.query().
-	where('citizen_id', citizenId).
-	update(helpers.formatRawCitizenData(params)).
-	then(() => manageAnswer(citizenId, questionId, params.answer, 'user info updated', res)).
-	catch(e => console.log(e));
-}
-
-function insertCitizen(params, questionId, res){
-	Citizen.query().
-	insert(helpers.formatRawCitizenData(params)).
-	then(citizen => insertAnswer(citizen.id, questionId, params.answer, 'user info updated', res)).
-	catch(e => console.log(e));
-}
-
-function processCitizen(params, questionId, res){
-	Citizen.query().
-	select().
-	where('citizen_email', params.email).
-	orWhere('citizen_cellphone', params.cellphone).
-	then(citizen => {
-		
-		if (citizen[0])
-			updateCitizen(citizen[0].citizen_id, params, questionId, res);
-		
-		else
-			insertCitizen(params, questionId, res);
-	});
-}
-
 function uploadAnswer(req, res){
 	queryHelpers.getCurrentQuestion.
 	then(question => {
 		
 		if (question[0])
-			processCitizen(req.body, question[0].id, res);
+			processCitizen(req.body, question[0].id, insertAnswer, manageAnswer, res);
 		
 		else 
 			res.status(503).send({message: "there's no trivia at the moment"});
