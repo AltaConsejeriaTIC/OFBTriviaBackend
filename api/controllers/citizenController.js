@@ -7,33 +7,32 @@ const helpers = require('../helpers/helpers');
 function updateCitizen(citizenId, params){
 	
   return Citizen.query().
-	where('citizen_id', citizenId).
-	update(helpers.formatRawCitizenData(params));
+         where('citizen_id', citizenId).
+         update(helpers.formatRawCitizenData(params));
 }
 
 function insertCitizen(params){
 	
   return Citizen.query().
-	insert(helpers.formatRawCitizenData(params));
+          insert(helpers.formatRawCitizenData(params));
 }
 
 function processCitizen(params, questionId, insertAnswer, manageAnswer, res){
 	Citizen.query().
-	select().
 	where('citizen_email', params.email).
 	orWhere('citizen_cellphone', params.cellphone).
 	then(citizen => {
 		
-		if (citizen[0])
-			updateCitizen(citizen[0].citizen_id, params).
-      then(() => manageAnswer(citizen[0].citizen_id, questionId,
-                              params.answer, 'user info updated', res)).
+		if (citizen[0]){
+      updateCitizen(citizen[0].citizen_id, params).
+      then(() => manageAnswer(citizen[0].citizen_id, questionId, params.answer,
+                              'user updated', res)).
       catch(e => console.log(e));
-		
+    }
 		else
 			insertCitizen(params).
-      then(newCitizen => insertAnswer(newCitizen[0].citizen_id, questionId,
-                                   params.answer, 'user created', res)).
+      then(newCitizen => insertAnswer(newCitizen.id, questionId,
+                                      {answer_content: params.answer}, 'user created', res)).
       catch(e => console.log(e));
 	});
 }

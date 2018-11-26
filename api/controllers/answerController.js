@@ -4,24 +4,22 @@ const Answer = require('../models/Answer');
 const processCitizen = require('./citizenController').processCitizen;
 const queryHelpers = require('../helpers/queryHelpers');
 
-function insertAnswer(citizenId, questionId, answer, citizenMessage, res){
-	Answer.query().
+function insertAnswer(citizenId, questionId, answer){
+	
+	return Answer.query().
 	insert({
 		answer_question: questionId,
 		answer_citizen: citizenId,
 		answer_content: answer
-	}).
-	then(() => res.status(200)({message: `answer created, ${citizenMessage}`})).
-	catch(e => console.log(e));
+	});
 }
 
-function updateAnswer(citizenId, questionId, answer, citizenMessage, res){
-	Answer.query().
-	where('answer_citizen', citizenId).
-	andWhere('answer_question', questionId).
-	update({answer_content: answer}).
-	then(() => res.json(`answer updated, ${citizenMessage}`)).
-	catch(e => console.log(e));
+function updateAnswer(citizenId, questionId, answer){
+	
+	return Answer.query().
+				 where('answer_citizen', citizenId).
+				 andWhere('answer_question', questionId).
+				 update(answer);
 }
 
 function manageAnswer(citizenId, questionId, answerContent, citizenMessage, res){
@@ -31,7 +29,11 @@ function manageAnswer(citizenId, questionId, answerContent, citizenMessage, res)
 	andWhere('answer_question', questionId).
 	then(answer => {
 		var operationOnAnswer = (answer)? updateAnswer : insertAnswer;
-		operationOnAnswer(citizenId, questionId, answerContent, citizenMessage, res);
+		var operationArgs = (answer)? [citizenId, questionId, {answer_content: answerContent}] :
+												[citizenId, questionId, answerContent];
+		operationOnAnswer(...operationArgs).
+		then(() => res.status(200).send({message: `answer updated, ${citizenMessage}`})).
+		catch(e => console.log(e));
 	});
 }
 
@@ -54,6 +56,14 @@ function getAnswersList(req, res){
 	where('answer_question', req.swagger.params.questionId.value).
 	orderBy('date').
 	then(answers => res.status(200).send(answers));
+}
+
+function selectWinners(req, res){
+	var updates = [];
+	
+	for (const winner of req.winners)
+		updates.push(updateAnswer(winner.citizenId, winner.questionId,
+								 {answer_winner: true}, '', res));
 }
 
 module.exports = {
