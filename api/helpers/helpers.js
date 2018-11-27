@@ -13,6 +13,15 @@ function createConditionedElements(ifTrueElement, ifFalseElement){
 	};
 }
 
+function formatVideoData(videoData){
+	var video = {};
+	
+	for (const key of Object.keys(videoData))
+		video[constants.videoFields[key]] = videoData[key];
+	
+	return video;
+}
+
 function runFunctionByCondition(condition, ifTrueFunction, ifTrueArgs,
 																ifFalseFunction, ifFalseArgs){
 	var functions = createConditionedElements(ifTrueFunction, ifFalseFunction);
@@ -45,6 +54,7 @@ function formatAdminData(rawData){
 module.exports = {
 	formatRawCitizenData: formatRawCitizenData,
 	formatAdminData: formatAdminData,
+	formatVideoData: formatVideoData,
 	runFunctionByCondition: runFunctionByCondition,
 	sendError: sendError
 };

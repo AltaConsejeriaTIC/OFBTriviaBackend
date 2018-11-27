@@ -17,7 +17,10 @@ exports.up = function(knex, Promise) {
 			table.date('question_start_date').notNullable();
 			table.date('question_end_date').notNullable();
 			table.string('question_real_answer').notNullable();
-			table.string('question_status').notNullable().defaultTo('Programada');
+			table.enu('question_status',
+								['Publicada', 'Terminada', 'Programada',
+								 'Pendiente pubicacion ganadores', 'Mostrando ganadores']).
+				notNullable().defaultTo('Programada');
 			table.boolean('question_active').notNullable().defaultTo(true);
 		}),
 		knex.schema.createTable('answers', table => {
@@ -39,6 +42,17 @@ exports.up = function(knex, Promise) {
 			table.string('admin_last_name').notNullable();
 			table.string('admin_password').notNullable();
 			table.boolean('admin_is_active').notNullable().defaultTo(true);
+		}),
+		knex.schema.createTable('videos', table => {
+			table.increments('video_id').primary().unique();
+			table.string('video_title').notNullable();
+			table.string('video_url').notNullable();
+		}),
+		knex.schema.createTable('audios', table => {
+			table.increments('audio_id').primary().unique();
+			table.string('audio_title').notNullable();
+			table.string('audio_artist').notNullable();
+			table.string('audio_url').notNullable();
 		})
 	]);
 };
