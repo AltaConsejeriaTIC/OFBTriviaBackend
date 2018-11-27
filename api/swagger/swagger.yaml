@@ -101,6 +101,16 @@ definitions:
       userId:
         type: integer
   
+  Video:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      url:
+        type: string
+  
   Question:
     type: object
     properties:
@@ -316,4 +326,58 @@ paths:
           description: Something went wrong
           schema:
             $ref: "#/definitions/ResponseMessage"
-          
+  
+  /upload-video:
+    x-swagger-router-controller: videoController
+    
+    post:
+      operationId: manageVideoData
+      description: Creates or updates a video
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: video
+          schema:
+            $ref: "#/definitions/Video"
+      
+      responses:
+        
+        200:
+          description: video updated
+          schema:
+            $ref: "#/definitions/Video"
+        
+        201:
+          description: Video created
+          schema:
+            $ref: "#/definitions/Video"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-videos:
+    x-swagger-router-controller: videoController
+    
+    get:
+      operationId: getVideos
+      description: Retrieves the five videos
+      tags:
+        - admin site
+      
+      responses:
+        
+        200:
+          description: video updated
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Video"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"

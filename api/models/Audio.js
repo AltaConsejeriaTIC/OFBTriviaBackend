@@ -3,13 +3,13 @@
 const Model = require('../../config/triviaDBConnection').Model;
 
 
-class Admin extends Model{
+class Audio extends Model{
 	
 	static get tableName(){
 		
-		return 'admins';
+		return 'audios';
 	}
 }
 
 
-module.exports = Admin;
+module.exports = Audio;
