@@ -93,6 +93,14 @@ definitions:
         type: number
         format: float
   
+  WinnerInfo:
+    type: object
+    properties:
+      questionId:
+        type: integer
+      userId:
+        type: integer
+  
   Question:
     type: object
     properties:
@@ -278,3 +286,34 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Question"
+  
+  /select-winners:
+    x-swagger-router-controller: answerController
+    
+    post:
+      operationId: selectWinners
+      summary: Sets useras answers as winners.
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: winners
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/WinnerInfo"
+      
+      responses:
+      
+        200:
+          description: ok
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+        
+        default:
+          description: Something went wrong
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+          

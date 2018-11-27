@@ -1,6 +1,9 @@
 
 const daysBetweenQuestions = 2;
 const questionsPerPage = 4;
+const errorMessage = {
+	message: 'An error has ocurred.'
+};
 const adminFields = {
 	email: "admin_email",
 	name: "admin_name",
@@ -13,5 +16,6 @@ const adminFields = {
 module.exports = {
 	adminFields: adminFields,
 	daysBetweenQuestions: daysBetweenQuestions,
-	questionsPerPage: questionsPerPage
+	questionsPerPage: questionsPerPage,
+	errorMessage: errorMessage
 };
