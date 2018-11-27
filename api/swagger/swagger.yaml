@@ -111,6 +111,18 @@ definitions:
       url:
         type: string
   
+  Audio:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      artist:
+        type: string
+      url:
+        type: string
+  
   Question:
     type: object
     properties:
@@ -371,11 +383,34 @@ paths:
       responses:
         
         200:
-          description: video updated
+          description: ok
           schema:
             type: array
             items:
               $ref: "#/definitions/Video"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-audios:
+    x-swagger-router-controller: audioController
+    
+    get:
+      operationId: getAudios
+      description: Retrieves the five audios
+      tags:
+        - admin site
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Audio"
         
         500:
           description: Something went wrong.
