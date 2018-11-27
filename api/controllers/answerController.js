@@ -3,6 +3,8 @@
 const Answer = require('../models/Answer');
 const processCitizen = require('./citizenController').processCitizen;
 const queryHelpers = require('../helpers/queryHelpers');
+const sendError = require('../helpers/helpers').sendError;
+const knex = require('../../config/triviaDBConnection').knex;
 
 function insertAnswer(citizenId, questionId, answer){
 	
@@ -59,14 +61,28 @@ function getAnswersList(req, res){
 }
 
 function selectWinners(req, res){
-	var updates = [];
-	
-	for (const winner of req.winners)
-		updates.push(updateAnswer(winner.citizenId, winner.questionId,
-								 {answer_winner: true}, '', res));
+	knex.transaction(trx => {
+		var updates = [];
+		req.body.map(winner => {
+			updates.push(updateAnswer(winner.userId, winner.questionId,
+																{answer_winner: true}, '', res).
+									 transacting(trx));
+		});
+		
+		Promise.all(updates).
+		then(() => {
+			trx.commit();
+			res.status(200).send({message: "Transaction done."});
+		}).
+		catch(() => {
+			trx.rollback();
+			sendError();
+		});
+	});
 }
 
 module.exports = {
 	uploadAnswer: uploadAnswer,
-	getAnswersList: getAnswersList
+	getAnswersList: getAnswersList,
+	selectWinners: selectWinners
 };

@@ -3,6 +3,8 @@
 const bcrypt = require('bcrypt');
 const constants = require('../helpers/constants');
 
+const sendError = (res) => res.status(500).send(constants.errorMessage);
+
 function createConditionedElements(ifTrueElement, ifFalseElement){
 	
 	return {
@@ -43,5 +45,6 @@ function formatAdminData(rawData){
 module.exports = {
 	formatRawCitizenData: formatRawCitizenData,
 	formatAdminData: formatAdminData,
-	runFunctionByCondition: runFunctionByCondition
+	runFunctionByCondition: runFunctionByCondition,
+	sendError: sendError
 };
