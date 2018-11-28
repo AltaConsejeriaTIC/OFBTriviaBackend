@@ -25,7 +25,7 @@ function updateVideo(params, res){
 	where('video_id', params.id).
 	update(helpers.formatData(params, constants.videoFields)).
 	then(() => res.status(200).send({id: params.id})).
-	catch(() =>res.status(500).send(constants.errorMessage));
+	catch(() => res.status(500).send(constants.errorMessage));
 }
 
 function manageVideoData(req, res){
