@@ -416,3 +416,35 @@ paths:
           description: Something went wrong.
           schema:
             $ref: "#/definitions/ResponseMessage"
+  
+  /upload-audio:
+    x-swagger-router-controller: audioController
+    
+    post:
+      operationId: manageAudio
+      description: Creates or updates an audio link
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: audio
+          schema:
+            $ref: "#/definitions/Audio"
+      
+      responses:
+        
+        200:
+          description: Audio updated
+          schema:
+            $ref: "#/definitions/Audio"
+        
+        201:
+          description: Audio created
+          schema:
+            $ref: "#/definitions/Audio"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"

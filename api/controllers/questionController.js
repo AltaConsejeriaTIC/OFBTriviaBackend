@@ -105,8 +105,7 @@ function getQuestionsList(req, res){
   limit(constants.questionsPerPage).
   offset(constants.questionsPerPage*(page - 1)).
   orderBy('endDate');
-  q.then(questions => {
-    res.status(200).send(questions);});
+  q.then(questions => res.status(200).send(questions));
 }
 
 module.exports = {

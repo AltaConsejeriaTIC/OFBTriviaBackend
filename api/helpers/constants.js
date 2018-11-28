@@ -17,10 +17,17 @@ const videoFields = {
 	url: 'video_url',
 	id: 'video_id'
 };
+const audioFields = {
+	title: 'audio_title',
+	artist: 'audio_artist',
+	url: 'audio_url',
+	id: 'audio_id'
+};
 
 module.exports = {
 	videoFields: videoFields,
 	adminFields: adminFields,
+	audioFields: audioFields,
 	daysBetweenQuestions: daysBetweenQuestions,
 	questionsPerPage: questionsPerPage,
 	errorMessage: errorMessage

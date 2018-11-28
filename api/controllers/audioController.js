@@ -1,6 +1,8 @@
 'use strict';
 
 const Audio = require('../models/Audio');
+const helpers = require('../helpers/helpers');
+const constants = require('../helpers/constants');
 
 function formatAudioToSend(audio){
 	
@@ -12,6 +14,26 @@ function formatAudioToSend(audio){
 	};
 }
 
+function insertAudio(params, res){
+	Audio.query().
+	insert(helpers.formatData(params, constants.audioFields)).
+	then(helpers.sendId(res)).
+	catch(() => helpers.sendError(res));
+}
+
+function updateAudio(params, res){
+	Audio.query().
+	where('audio_id', params.id).
+	update(helpers.formatData(params, constants.audioFields)).
+	then(helpers.sendId(res)).
+	catch(() => helpers.sendError(res));
+}
+
+function manageAudioData(req, res){
+	const operationOnAudio = (req.body.id)? updateAudio : insertAudio;
+	operationOnAudio(req.body, res);
+}
+
 function getAudios(req, res){
 	Audio.query().
 	select().
@@ -19,5 +41,6 @@ function getAudios(req, res){
 }
 
 module.exports = {
-	getAudios: getAudios
+	getAudios: getAudios,
+	manageAudio: manageAudioData
 };
