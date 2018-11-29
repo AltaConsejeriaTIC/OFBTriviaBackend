@@ -3,6 +3,9 @@
 const bcrypt = require('bcrypt');
 const constants = require('../helpers/constants');
 
+const sendError = (res) => res.status(500).send(constants.errorMessage);
+const sendId = (res) => (newObject) => res.status(201).send({id: newObject.id});
+
 function createConditionedElements(ifTrueElement, ifFalseElement){
 	
 	return {
@@ -40,8 +43,20 @@ function formatAdminData(rawData){
 	return formatedAdmin;
 }
 
+function formatData(jsonData, tableColumns){
+	var data = {};
+	
+	for (const key of Object.keys(jsonData))
+		data[tableColumns[key]] = jsonData[key];
+	
+	return data;
+}
+
 module.exports = {
 	formatRawCitizenData: formatRawCitizenData,
 	formatAdminData: formatAdminData,
-	runFunctionByCondition: runFunctionByCondition
+	formatData: formatData,
+	runFunctionByCondition: runFunctionByCondition,
+	sendError: sendError,
+	sendId: sendId
 };

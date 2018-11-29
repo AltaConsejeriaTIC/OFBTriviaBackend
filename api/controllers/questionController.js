@@ -49,6 +49,19 @@ function lookForDateCollissions(oldQuestionDates, newQuestionDates){
          constants.daysBetweenQuestions;
 }
 
+function insertQuestion(question, res){
+  Question.query().insert(question).
+  then(question => {
+    
+    if (question)
+      res.status(201).send({message: "question created"});
+    
+    else
+      res.status(500).send({message: "an error ocurred"});
+  }).
+  catch(e => console.log(e));
+}
+
 function validateQuestionDates(question, newQuestionDates, res){
   const areDatesOK = (oldDates) =>
         lookForDateCollissions(oldDates, newQuestionDates) &&
@@ -63,19 +76,6 @@ function validateQuestionDates(question, newQuestionDates, res){
     else
       res.status(500).send({message: "question dates collides with other question"});
   });
-}
-
-function insertQuestion(question, res){
-  Question.query().insert(question).
-  then(question => {
-    
-    if (question)
-      res.status(201).send({message: "question created"});
-    
-    else
-      res.status(500).send({message: "an error ocurred"});
-  }).
-  catch(e => console.log(e));
 }
 
 function createQuestion(req, res){
@@ -94,8 +94,6 @@ function createQuestion(req, res){
 
 function getQuestionsList(req, res){
   const page = req.swagger.params.page.value || 1;
-  console.log("uno: "+(constants.questionsPerPage*(page -1) + 1));
-  console.log("dos: "+page*constants.questionsPerPage);
   var q = Question.query().
   select('question_id as id', 'question_content as content',
          'question_created_date as startDate',
@@ -105,11 +103,9 @@ function getQuestionsList(req, res){
            (!req.swagger.params.lastId)? "true" :
            knex.raw("id > ?", req.swagger.params.lastId.value)).
   limit(constants.questionsPerPage).
-  offset((constants.questionsPerPage*(page -1) + 1)).
+  offset(constants.questionsPerPage*(page - 1)).
   orderBy('endDate');
-  console.log(q.toString());
-  q.then(questions => {
-    res.status(200).send(questions);});
+  q.then(questions => res.status(200).send(questions));
 }
 
 module.exports = {

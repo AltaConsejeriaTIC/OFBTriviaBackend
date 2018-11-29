@@ -1,28 +1,27 @@
 'use strict';
 
 const Answer = require('../models/Answer');
-const Citizen = require('../models/Citizen');
+const processCitizen = require('./citizenController').processCitizen;
 const queryHelpers = require('../helpers/queryHelpers');
-const helpers = require('../helpers/helpers');
+const sendError = require('../helpers/helpers').sendError;
+const knex = require('../../config/triviaDBConnection').knex;
 
-function insertAnswer(citizenId, questionId, answer, citizenMessage, res){
-	Answer.query().
+function insertAnswer(citizenId, questionId, answer){
+	
+	return Answer.query().
 	insert({
 		answer_question: questionId,
 		answer_citizen: citizenId,
 		answer_content: answer
-	}).
-	then(() => res.status(200)({message: `answer created, ${citizenMessage}`})).
-	catch(e => console.log(e));
+	});
 }
 
-function updateAnswer(citizenId, questionId, answer, citizenMessage, res){
-	Answer.query().
-	where('answer_citizen', citizenId).
-	andWhere('answer_question', questionId).
-	update({answer_content: answer}).
-	then(() => res.json(`answer updated, ${citizenMessage}`)).
-	catch(e => console.log(e));
+function updateAnswer(citizenId, questionId, answer){
+	
+	return Answer.query().
+				 where('answer_citizen', citizenId).
+				 andWhere('answer_question', questionId).
+				 update(answer);
 }
 
 function manageAnswer(citizenId, questionId, answerContent, citizenMessage, res){
@@ -32,37 +31,11 @@ function manageAnswer(citizenId, questionId, answerContent, citizenMessage, res)
 	andWhere('answer_question', questionId).
 	then(answer => {
 		var operationOnAnswer = (answer)? updateAnswer : insertAnswer;
-		operationOnAnswer(citizenId, questionId, answerContent, citizenMessage, res);
-	});
-}
-
-function updateCitizen(citizenId, params, questionId, res){
-	Citizen.query().
-	where('citizen_id', citizenId).
-	update(helpers.formatRawCitizenData(params)).
-	then(() => manageAnswer(citizenId, questionId, params.answer, 'user info updated', res)).
-	catch(e => console.log(e));
-}
-
-function insertCitizen(params, questionId, res){
-	Citizen.query().
-	insert(helpers.formatRawCitizenData(params)).
-	then(citizen => insertAnswer(citizen.id, questionId, params.answer, 'user info updated', res)).
-	catch(e => console.log(e));
-}
-
-function processCitizen(params, questionId, res){
-	Citizen.query().
-	select().
-	where('citizen_email', params.email).
-	orWhere('citizen_cellphone', params.cellphone).
-	then(citizen => {
-		
-		if (citizen[0])
-			updateCitizen(citizen[0].citizen_id, params, questionId, res);
-		
-		else
-			insertCitizen(params, questionId, res);
+		var operationArgs = (answer)? [citizenId, questionId, {answer_content: answerContent}] :
+												[citizenId, questionId, answerContent];
+		operationOnAnswer(...operationArgs).
+		then(() => res.status(200).send({message: `answer updated, ${citizenMessage}`})).
+		catch(e => console.log(e));
 	});
 }
 
@@ -71,7 +44,7 @@ function uploadAnswer(req, res){
 	then(question => {
 		
 		if (question[0])
-			processCitizen(req.body, question[0].id, res);
+			processCitizen(req.body, question[0].id, insertAnswer, manageAnswer, res);
 		
 		else 
 			res.status(503).send({message: "there's no trivia at the moment"});
@@ -85,9 +58,34 @@ function getAnswersList(req, res){
 	where('answer_question', req.swagger.params.questionId.value).
 	orderBy('date').
 	then(answers => res.status(200).send(answers));
+<<<<<<< HEAD
+=======
+}
+
+function selectWinners(req, res){
+	knex.transaction(trx => {
+		var updates = [];
+		req.body.map(winner => {
+			updates.push(updateAnswer(winner.userId, winner.questionId,
+																{answer_winner: true}, '', res).
+									 transacting(trx));
+		});
+		
+		Promise.all(updates).
+		then(() => {
+			trx.commit();
+			res.status(200).send({message: "Transaction done."});
+		}).
+		catch(() => {
+			trx.rollback();
+			sendError(res);
+		});
+	});
+>>>>>>> 446dd7b6132837798d7cc823ce1e809a08b2834c
 }
 
 module.exports = {
 	uploadAnswer: uploadAnswer,
-	getAnswersList: getAnswersList
+	getAnswersList: getAnswersList,
+	selectWinners: selectWinners
 };

@@ -93,6 +93,36 @@ definitions:
         type: number
         format: float
   
+  WinnerInfo:
+    type: object
+    properties:
+      questionId:
+        type: integer
+      userId:
+        type: integer
+  
+  Video:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      url:
+        type: string
+  
+  Audio:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      artist:
+        type: string
+      url:
+        type: string
+  
   Question:
     type: object
     properties:
@@ -278,3 +308,143 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Question"
+  
+  /select-winners:
+    x-swagger-router-controller: answerController
+    
+    post:
+      operationId: selectWinners
+      summary: Sets useras answers as winners.
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: winners
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/WinnerInfo"
+      
+      responses:
+      
+        200:
+          description: ok
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+        
+        default:
+          description: Something went wrong
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /upload-video:
+    x-swagger-router-controller: videoController
+    
+    post:
+      operationId: manageVideoData
+      description: Creates or updates a video
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: video
+          schema:
+            $ref: "#/definitions/Video"
+      
+      responses:
+        
+        200:
+          description: video updated
+          schema:
+            $ref: "#/definitions/Video"
+        
+        201:
+          description: Video created
+          schema:
+            $ref: "#/definitions/Video"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-videos:
+    x-swagger-router-controller: videoController
+    
+    get:
+      operationId: getVideos
+      description: Retrieves the five videos
+      tags:
+        - admin site
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Video"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-audios:
+    x-swagger-router-controller: audioController
+    
+    get:
+      operationId: getAudios
+      description: Retrieves the five audios
+      tags:
+        - admin site
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Audio"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /upload-audio:
+    x-swagger-router-controller: audioController
+    
+    post:
+      operationId: manageAudio
+      description: Creates or updates an audio link
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: audio
+          schema:
+            $ref: "#/definitions/Audio"
+      
+      responses:
+        
+        200:
+          description: Audio updated
+          schema:
+            $ref: "#/definitions/Audio"
+        
+        201:
+          description: Audio created
+          schema:
+            $ref: "#/definitions/Audio"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
