@@ -130,10 +130,10 @@ definitions:
         type: [string, 'null']
       endDate:
         type: string
-        format: date-time
+        format: date
       startDate:
         type: string
-        format: date-time
+        format: date
       answer:
         type: string
       status:
@@ -150,7 +150,7 @@ paths:
     get:
       operationId: getTriviaInfo
       summary: An object with content and time to end.
-      description: Retrieves the questionof the trivia and the date that it ends.
+      description: Retrieves the question of the trivia and the date that it ends.
       tags:
         - mobile app
       
@@ -448,3 +448,25 @@ paths:
           description: Something went wrong.
           schema:
             $ref: "#/definitions/ResponseMessage"
+  
+  /upload-question:
+    x-swagger-router-controller: questionController
+    
+    post:
+      operationId: manageQuestion
+      description: creates a new question or updates a new one
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: question
+          schema:
+            $ref: "#/definitions/Question"
+      
+      responses:
+        
+        200:
+          description: ok
+      
+    

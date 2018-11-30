@@ -20,7 +20,7 @@ function getTriviaInfo(req, res) {
     endDate: question[0].endDate
   }));
 }
-
+/*
 function validateDatesIntersections(booleanOperator, oldStartDate, oldEndDate,
                                     newStartDate, newEndDate){
   const comparator = comparators[booleanOperator];
@@ -48,7 +48,7 @@ function lookForDateCollissions(oldQuestionDates, newQuestionDates){
   return daysDiff(oldQuestionDates.startDate, newQuestionDates.endDate) >=
          constants.daysBetweenQuestions;
 }
-
+*/
 function insertQuestion(question, res){
   Question.query().insert(question).
   then(question => {
@@ -62,8 +62,8 @@ function insertQuestion(question, res){
   catch(e => console.log(e));
 }
 
-function validateQuestionDates(question, newQuestionDates, res){
-  const areDatesOK = (oldDates) =>
+function validateQuestionDates(question, newQuestionDates, questionOperation, res){
+  /*const areDatesOK = (oldDates) =>
         lookForDateCollissions(oldDates, newQuestionDates) &&
         validateDatesBetweenQuestions(oldDates, newQuestionDates);
   Question.query().
@@ -71,14 +71,29 @@ function validateQuestionDates(question, newQuestionDates, res){
   then(oldQuestionDates => {
     
     if (!oldQuestionDates.filter(oldDate => !areDatesOK(oldDate)).length)
-      insertQuestion(question, res);
+      questionOperation(question, res);
     
     else
       res.status(500).send({message: "question dates collides with other question"});
-  });
+  });*/
+  console.log(">>>>>>>>>>>");
+  const lowerLimit = `date('${newQuestionDates.startDate}') - 2`;
+  const upperLimit = `date('${newQuestionDates.endDate}') + 2`;
+  var q = Question.query().
+  select('question_id as id', 'question_start_date as startDate',
+         'question_end_date as endDate').
+  whereRaw(`(((question_start_date <= date(${lowerLimit})) and (question_end_date <= date(${upperLimit})))
+           and ((question_start_date <= date(${lowerLimit})) and (question_end_date >= date(${upperLimit})))
+           and ((question_start_date >= date(${lowerLimit})) and (question_end_date <= date(${upperLimit})))
+           and ((question_start_date >= date(${lowerLimit})) and (question_end_date >= date(${upperLimit}))))`);
+  /*then(questions => {
+    console.log(questions);
+  });*/
+  
+  console.log(q.toString());
 }
 
-function createQuestion(req, res){
+function manageQuestion(req, res){
   const question = {
     question_content: req.body.content,
     question_start_date: req.body.startDate,
@@ -89,7 +104,7 @@ function createQuestion(req, res){
     startDate: req.body.startDate,
     endDate: req.body.endDate
   };
-  validateQuestionDates(question, questionDates, res);
+  validateQuestionDates(question, questionDates, insertQuestion, res);
 }
 
 function getQuestionsList(req, res){
@@ -110,6 +125,6 @@ function getQuestionsList(req, res){
 
 module.exports = {
   getTriviaInfo: getTriviaInfo,
-  createQuestion: createQuestion,
+  manageQuestion: manageQuestion,
   getQuestionsList: getQuestionsList
 };

@@ -58,8 +58,6 @@ function getAnswersList(req, res){
 	where('answer_question', req.swagger.params.questionId.value).
 	orderBy('date').
 	then(answers => res.status(200).send(answers));
-<<<<<<< HEAD
-=======
 }
 
 function selectWinners(req, res){
@@ -81,7 +79,6 @@ function selectWinners(req, res){
 			sendError(res);
 		});
 	});
->>>>>>> 446dd7b6132837798d7cc823ce1e809a08b2834c
 }
 
 module.exports = {
