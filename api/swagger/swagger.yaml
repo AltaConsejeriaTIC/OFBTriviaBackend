@@ -126,12 +126,14 @@ definitions:
   Question:
     type: object
     properties:
+      id:
+        type: integer
       content:
         type: [string, 'null']
-      endDate:
+      startDate:
         type: string
         format: date
-      startDate:
+      endDate:
         type: string
         format: date
       answer:
@@ -444,7 +446,7 @@ paths:
           schema:
             $ref: "#/definitions/Audio"
         
-        500:
+        default:
           description: Something went wrong.
           schema:
             $ref: "#/definitions/ResponseMessage"
@@ -468,5 +470,16 @@ paths:
         
         200:
           description: ok
-      
-    
+          schema:
+            $ref: "#/definitions/Question"
+        
+        201:
+          description: ok
+          schema:
+            $ref: "#/definitions/Question"
+        
+        
+        default:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"

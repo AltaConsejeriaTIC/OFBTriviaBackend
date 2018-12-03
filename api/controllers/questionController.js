@@ -5,13 +5,17 @@ const Question = require('../models/Question');
 const constants = require('../helpers/constants');
 const knex = require('../../config/triviaDBConnection').knex;
 
-const comparators = {
-  '>': (leftElement, rightElement) => leftElement > rightElement,
-  '<': (leftElement, rightElement) => leftElement < rightElement
-};
-const stringDateTime = (date) => (new Date(date)).getTime();
-const daysDiff = (oldTime, newTime) => Math.abs(stringDateTime(oldTime) -
-                                                stringDateTime(newTime))/86400000;
+const dateComparatorStringBuilder = (dateField, booleanOperator, dateValue, sign) =>
+  `(${dateField} ${booleanOperator} (date((${dateValue})) ${sign} ${constants.daysBetweenQuestions}))`;
+
+const dateSubQueryBuilder = (dateField, id) => 
+      Question.query.
+      select(dateField).
+      where('question_id', id).
+      toString();
+
+const dateFiller = (question, dateField) => `'${question[dateField]}'` ||
+      dateSubQueryBuilder(dateField, question.question_id);
 
 function getTriviaInfo(req, res) {
   queryHelpers.getCurrentQuestion.
@@ -20,77 +24,64 @@ function getTriviaInfo(req, res) {
     endDate: question[0].endDate
   }));
 }
-/*
-function validateDatesIntersections(booleanOperator, oldStartDate, oldEndDate,
-                                    newStartDate, newEndDate){
-  const comparator = comparators[booleanOperator];
-  
-  return comparator(oldStartDate, newStartDate) &&
-         comparator(oldStartDate, newEndDate) &&
-         comparator(oldEndDate, newStartDate) &&
-         comparator(oldEndDate, newEndDate);
-}
 
-function validateDatesBetweenQuestions(oldQuestionDates, newQuestionDates){
-  var oldStartDate = stringDateTime(oldQuestionDates.startDate);
-  var oldEndDate = stringDateTime(oldQuestionDates.endDate);
-  var newStartDate = stringDateTime(newQuestionDates.startDate);
-  var newEndDate = stringDateTime(newQuestionDates.endDate);
-  
-  return validateDatesIntersections('<', oldStartDate, oldEndDate,
-                                    newStartDate, newEndDate) ||
-         validateDatesIntersections('>', oldStartDate, oldEndDate,
-                                    newStartDate, newEndDate);
-}
-
-function lookForDateCollissions(oldQuestionDates, newQuestionDates){
-  
-  return daysDiff(oldQuestionDates.startDate, newQuestionDates.endDate) >=
-         constants.daysBetweenQuestions;
-}
-*/
-function insertQuestion(question, res){
-  Question.query().insert(question).
-  then(question => {
-    
-    if (question)
-      res.status(201).send({message: "question created"});
-    
-    else
-      res.status(500).send({message: "an error ocurred"});
-  }).
-  catch(e => console.log(e));
-}
-
-function validateQuestionDates(question, newQuestionDates, questionOperation, res){
-  /*const areDatesOK = (oldDates) =>
-        lookForDateCollissions(oldDates, newQuestionDates) &&
-        validateDatesBetweenQuestions(oldDates, newQuestionDates);
+function updateQuestion(question, res){
   Question.query().
-  select('question_start_date as startDate', 'question_end_date as endDate').
-  then(oldQuestionDates => {
+  update(question).
+  where('question_id', question.question_id).
+  andWhere(function(){
+      this.whereRaw(`date((${question.question_start_date})) <= date((${question.question_end_date}))`);  
+    }
+  ).
+  then(rows => {
     
-    if (!oldQuestionDates.filter(oldDate => !areDatesOK(oldDate)).length)
-      questionOperation(question, res);
+    if (rows)
+      res.status(200).send({id: question.question_id});
     
     else
-      res.status(500).send({message: "question dates collides with other question"});
-  });*/
-  console.log(">>>>>>>>>>>");
-  const lowerLimit = `date('${newQuestionDates.startDate}') - 2`;
-  const upperLimit = `date('${newQuestionDates.endDate}') + 2`;
-  var q = Question.query().
-  select('question_id as id', 'question_start_date as startDate',
-         'question_end_date as endDate').
-  whereRaw(`(((question_start_date <= date(${lowerLimit})) and (question_end_date <= date(${upperLimit})))
-           and ((question_start_date <= date(${lowerLimit})) and (question_end_date >= date(${upperLimit})))
-           and ((question_start_date >= date(${lowerLimit})) and (question_end_date <= date(${upperLimit})))
-           and ((question_start_date >= date(${lowerLimit})) and (question_end_date >= date(${upperLimit}))))`);
-  /*then(questions => {
-    console.log(questions);
-  });*/
+      res.status(500).send({message: "An error ocurred"});
+  }).
+  catch(() => res.status(500).send({message: "An error ocurred"}));
+}
+
+function insertQuestion(question, res){
   
-  console.log(q.toString());
+  if ((new Date(question.question_end_date)) >= (new Date(question.question_start_date)))
+    Question.query().insert(question).
+    then(question => {
+      
+      if (question)
+        res.status(201).send({id: question.id});
+      
+      else
+        res.status(500).send({message: "An error ocurred"});
+    }).
+    catch(() => res.status(500).send({message: "An error ocurred"}));
+  
+  else
+    res.status(412).send({message: "Dates not allowed"});
+}
+
+function validateQuestionDates(question, questionOperation, dates, res){
+  var questionValidator = Question.query().
+  select().
+  whereRaw(`not (
+    ${dateComparatorStringBuilder('question_end_date', '<',
+                                  dates.startDate, '-')}
+    or ${dateComparatorStringBuilder('question_start_date', '>',
+                                     dates.endDate, '+')}
+  )`);
+  questionValidator = (!question.question_id)? questionValidator :
+    questionValidator.andWhere('question_id', '!=', question.question_id);
+  questionValidator.
+  then(questions => {
+    
+    if (questions.length > 0)
+      res.status(412).send({message: "Dates collision."});
+    
+    else
+      questionOperation(question, res);
+  });
 }
 
 function manageQuestion(req, res){
@@ -98,13 +89,15 @@ function manageQuestion(req, res){
     question_content: req.body.content,
     question_start_date: req.body.startDate,
     question_end_date: req.body.endDate,
-    question_real_answer: req.body.answer
+    question_real_answer: req.body.answer,
+    question_id: req.body.id
   };
-  const questionDates = {
-    startDate: req.body.startDate,
-    endDate: req.body.endDate
+  const dates = {
+    startDate: dateFiller(question, 'question_start_date'),
+    endDate: dateFiller(question, 'question_end_date'),
   };
-  validateQuestionDates(question, questionDates, insertQuestion, res);
+  const questionOperation = question.id? updateQuestion : insertQuestion;
+  validateQuestionDates(question, questionOperation, dates, res);
 }
 
 function getQuestionsList(req, res){
