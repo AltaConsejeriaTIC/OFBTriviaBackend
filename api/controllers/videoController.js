@@ -7,7 +7,7 @@ const constants = require('../helpers/constants');
 function formatVideoToSend(video){
 	
 	return {
-		id: video.id,
+		id: video.video_id,
 		title: video.video_title,
 		url: video.video_url
 	};
@@ -40,7 +40,16 @@ function getVideos(req, res){
 	catch(() => res.status(500).send(constants.errorMessage));
 }
 
+function getVideo(req, res){
+	Video.query().
+	select().
+	where('video_id', req.swagger.params.id.value).
+	then(video => res.status(200).send(formatVideoToSend(video[0]))).
+	catch(() => res.status(500).send(constants.errorMessage));
+}
+
 module.exports = {
 	manageVideoData: manageVideoData,
-	getVideos: getVideos
+	getVideos: getVideos,
+	getVideo: getVideo
 };

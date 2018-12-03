@@ -396,6 +396,32 @@ paths:
           schema:
             $ref: "#/definitions/ResponseMessage"
   
+  /get-video:
+    x-swagger-router-controller: videoController
+    
+    get:
+      operationId: getVideo
+      description: Retrieves the specified video
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: id
+          type: integer
+      
+      responses:
+        
+        200:
+          description: video updated
+          schema:
+            $ref: "#/definitions/Video"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
   /get-audios:
     x-swagger-router-controller: audioController
     
@@ -413,6 +439,32 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Audio"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-audio:
+    x-swagger-router-controller: audioController
+    
+    get:
+      operationId: getAudio
+      description: Retrieves the especified audio
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: id
+          type: integer
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            $ref: "#/definitions/Audio"
         
         500:
           description: Something went wrong.
