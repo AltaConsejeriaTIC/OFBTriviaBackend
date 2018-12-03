@@ -76,7 +76,7 @@ function selectWinners(req, res){
 		}).
 		catch(() => {
 			trx.rollback();
-			sendError();
+			sendError(res);
 		});
 	});
 }

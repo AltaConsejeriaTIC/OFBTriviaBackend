@@ -13,24 +13,24 @@ function formatVideoToSend(video){
 	};
 }
 
-function insertVideo(req, params, res){
+function insertVideo(params, res){
 	Video.query().
-	insert(helpers.formatVideoData(params)).
-	then(video => res.status(201).send({id: video.id})).
+	insert(helpers.formatData(params, constants.videoFields)).
+	then(helpers.sendId(res)).
 	catch(() => res.status(500).send(constants.errorMessage));
 }
 
-function updateVideo(req, params, res){
+function updateVideo(params, res){
 	Video.query().
 	where('video_id', params.id).
-	update(helpers.formatVideoData(params)).
+	update(helpers.formatData(params, constants.videoFields)).
 	then(() => res.status(200).send({id: params.id})).
-	catch(() =>res.status(500).send(constants.errorMessage));
+	catch(() => res.status(500).send(constants.errorMessage));
 }
 
 function manageVideoData(req, res){
 	const videoOperation = (req.body.id)? updateVideo : insertVideo;
-	videoOperation(req, req.body, res);
+	videoOperation(req.body, res);
 }
 
 function getVideos(req, res){

@@ -111,17 +111,31 @@ definitions:
       url:
         type: string
   
+  Audio:
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      artist:
+        type: string
+      url:
+        type: string
+  
   Question:
     type: object
     properties:
+      id:
+        type: integer
       content:
         type: [string, 'null']
-      endDate:
-        type: string
-        format: date-time
       startDate:
         type: string
-        format: date-time
+        format: date
+      endDate:
+        type: string
+        format: date
       answer:
         type: string
       status:
@@ -138,7 +152,7 @@ paths:
     get:
       operationId: getTriviaInfo
       summary: An object with content and time to end.
-      description: Retrieves the questionof the trivia and the date that it ends.
+      description: Retrieves the question of the trivia and the date that it ends.
       tags:
         - mobile app
       
@@ -378,6 +392,94 @@ paths:
               $ref: "#/definitions/Video"
         
         500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-audios:
+    x-swagger-router-controller: audioController
+    
+    get:
+      operationId: getAudios
+      description: Retrieves the five audios
+      tags:
+        - admin site
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Audio"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /upload-audio:
+    x-swagger-router-controller: audioController
+    
+    post:
+      operationId: manageAudio
+      description: Creates or updates an audio link
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: audio
+          schema:
+            $ref: "#/definitions/Audio"
+      
+      responses:
+        
+        200:
+          description: Audio updated
+          schema:
+            $ref: "#/definitions/Audio"
+        
+        201:
+          description: Audio created
+          schema:
+            $ref: "#/definitions/Audio"
+        
+        default:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /upload-question:
+    x-swagger-router-controller: questionController
+    
+    post:
+      operationId: manageQuestion
+      description: creates a new question or updates a new one
+      tags:
+        - admin site
+      
+      parameters:
+        - in: body
+          name: question
+          schema:
+            $ref: "#/definitions/Question"
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            $ref: "#/definitions/Question"
+        
+        201:
+          description: ok
+          schema:
+            $ref: "#/definitions/Question"
+        
+        
+        default:
           description: Something went wrong.
           schema:
             $ref: "#/definitions/ResponseMessage"

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const constants = require('../helpers/constants');
 
 const sendError = (res) => res.status(500).send(constants.errorMessage);
+const sendId = (res) => (newObject) => res.status(201).send({id: newObject.id});
 
 function createConditionedElements(ifTrueElement, ifFalseElement){
 	
@@ -11,15 +12,6 @@ function createConditionedElements(ifTrueElement, ifFalseElement){
 		true: ifTrueElement,
 		false: ifFalseElement
 	};
-}
-
-function formatVideoData(videoData){
-	var video = {};
-	
-	for (const key of Object.keys(videoData))
-		video[constants.videoFields[key]] = videoData[key];
-	
-	return video;
 }
 
 function runFunctionByCondition(condition, ifTrueFunction, ifTrueArgs,
@@ -51,10 +43,20 @@ function formatAdminData(rawData){
 	return formatedAdmin;
 }
 
+function formatData(jsonData, tableColumns){
+	var data = {};
+	
+	for (const key of Object.keys(jsonData))
+		data[tableColumns[key]] = jsonData[key];
+	
+	return data;
+}
+
 module.exports = {
 	formatRawCitizenData: formatRawCitizenData,
 	formatAdminData: formatAdminData,
-	formatVideoData: formatVideoData,
+	sendError: sendError,
+	formatData: formatData,
 	runFunctionByCondition: runFunctionByCondition,
-	sendError: sendError
+	sendId: sendId
 };
