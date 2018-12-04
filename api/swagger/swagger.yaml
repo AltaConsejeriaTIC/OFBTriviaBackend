@@ -150,10 +150,10 @@ definitions:
         type: [string, 'null']
       startDate:
         type: string
-        format: date
+        format: date-time
       endDate:
         type: string
-        format: date
+        format: date-time
       answer:
         type: string
       status:
