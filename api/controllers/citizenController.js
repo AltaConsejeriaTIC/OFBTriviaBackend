@@ -51,10 +51,15 @@ function getWinners(req, res) {
   joinRelation('questions').
   whereRaw(`question_end_date = (${previousQuestion.toString()})`).
   andWhere('answer_winner', '=', true).
-  then(winners => res.json({
-    date: winners[0].date,
-    winners: winners.map(winner => `${winner.name} ${winner.lastName}`)
-  }));
+  then(winners => {
+    const result = (winners.length  > 0)? {
+        date: winners[0].date,
+        winners: winners.map(winner => `${winner.name} ${winner.lastName}`)
+      } :
+      {};
+    
+    res.status(200).send(result);
+  });
 }
 
 module.exports = {
