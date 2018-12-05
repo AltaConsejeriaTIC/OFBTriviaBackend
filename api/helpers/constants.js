@@ -1,3 +1,4 @@
+'use strict';
 
 const daysBetweenQuestions = 2;
 const questionsPerPage = 4;
@@ -13,9 +14,13 @@ const adminFields = {
 	active: 'admin_is_active'
 };
 const videoFields = {
+	id: 'video_id',
 	title: 'video_title',
+	author: 'video_author',
 	url: 'video_url',
-	id: 'video_id'
+	time: 'video_total_time',
+	thumbnail: 'video_thumbnail',
+	selected: 'video_selected'
 };
 const audioFields = {
 	title: 'audio_title',

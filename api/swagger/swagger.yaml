@@ -8,6 +8,7 @@ schemes:
   - http
 consumes:
   - application/json
+  - multipart/form-data
 produces:
   - application/json
 basePath: /trivia
@@ -126,8 +127,17 @@ definitions:
         type: integer
       title:
         type: string
+      author:
+        type: string
+      time:
+        type: number
+        format: float
+      thumbnail:
+        type: string
       url:
         type: string
+      selected:
+        type: boolean
   
   Audio:
     type: object
@@ -140,6 +150,8 @@ definitions:
         type: string
       url:
         type: string
+      selected:
+        type: boolean
   
   Question:
     type: object
@@ -395,10 +407,26 @@ paths:
         - admin site
       
       parameters:
-        - in: body
-          name: video
-          schema:
-            $ref: "#/definitions/Video"
+        - in: formData
+          name: thumbnail
+          type: file
+        - in: formData
+          name: title
+          type: string
+        - in: formData
+          name: author
+          type: string
+        - in: formData
+          name: time
+          type: number
+          format: float
+        - in: formData
+          name: url
+          type: string
+        - in: formData
+          name: id
+          type: integer
+          required: false
       
       responses:
         

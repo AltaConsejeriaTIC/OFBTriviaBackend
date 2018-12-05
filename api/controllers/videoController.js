@@ -1,36 +1,67 @@
+
+
 'use strict';
 
 const Video = require('../models/Video');
 const helpers = require('../helpers/helpers');
 const constants = require('../helpers/constants');
+const imagesPath = require('../../config/paths').imagesPath;
+
+function storeThumbnail(videoId, thumbnail){
+	
+	if (thumbnail){
+		const fileName = 'thumbnail_video_' + videoId;
+		helpers.storeFile(thumbnail, fileName);
+	}
+}
 
 function formatVideoToSend(video){
 	
 	return {
 		id: video.video_id,
 		title: video.video_title,
-		url: video.video_url
+		author: video.video_author,
+		time: video.video_total_time,
+		selected: video.video_selected,
+		url: video.video_url,
+		thumbnail: video.video_thumbnail
 	};
 }
 
-function insertVideo(params, res){
+function updateVideo(video, thumbnail, res, isANewVideo = false){
 	Video.query().
-	insert(helpers.formatData(params, constants.videoFields)).
-	then(helpers.sendId(res)).
+	where('video_id', video.id).
+	update(helpers.formatData(video, constants.videoFields)).
+	then(() => {
+		storeThumbnail(video.id, thumbnail);
+		
+		if (isANewVideo)
+			helpers.sendId(res)(video);
+		
+		else
+			res.status(200).send({id: parseInt(video.id)});
+	}).
 	catch(() => res.status(500).send(constants.errorMessage));
 }
 
-function updateVideo(params, res){
+function insertVideo(params, thumbnail, res){
 	Video.query().
-	where('video_id', params.id).
-	update(helpers.formatData(params, constants.videoFields)).
-	then(() => res.status(200).send({id: params.id})).
+	insert(helpers.formatData(params, constants.videoFields)).
+	then(video => {
+		const toUpdate = {
+			id: video.id,
+			thumbnail: `${imagesPath}/thumbnail_video_${video.id}.${thumbnail.name.split('.').slice(-1)}`
+		};
+		storeThumbnail(video.id, thumbnail);
+		updateVideo(toUpdate, null, res, true);
+	}).
 	catch(() => res.status(500).send(constants.errorMessage));
 }
 
 function manageVideoData(req, res){
-	const videoOperation = (req.body.id)? updateVideo : insertVideo;
-	videoOperation(req.body, res);
+	const videoOperation = (req.body.id > 0)? updateVideo : insertVideo;
+	const thumbnail = req.files.thumbnail || null;
+	videoOperation(req.body, thumbnail, res);
 }
 
 function getVideos(req, res){

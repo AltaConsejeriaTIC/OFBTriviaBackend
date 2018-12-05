@@ -10,6 +10,7 @@ function formatAudioToSend(audio){
 		id: audio.audio_id,
 		title: audio.audio_title,
 		artist: audio.audio_artist,
+		selected: audio.audio_selected,
 		url: audio.audio_url
 	};
 }
@@ -25,7 +26,7 @@ function updateAudio(params, res){
 	Audio.query().
 	where('audio_id', params.id).
 	update(helpers.formatData(params, constants.audioFields)).
-	then(helpers.sendId(res)).
+	then(() => res.status(200).send({id: parseInt(params.id)})).
 	catch(() => helpers.sendError(res));
 }
 
