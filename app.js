@@ -1,7 +1,9 @@
 'use strict';
 
+const fileUpload = require('express-fileupload');
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+app.use(fileUpload());
 module.exports = app; // for testing
 
 var config = {
