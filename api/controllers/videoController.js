@@ -18,7 +18,7 @@ function storeThumbnail(videoId, thumbnail){
 function formatVideoToSend(video){
 	
 	return {
-		id: video.id,
+		id: video.video_id,
 		title: video.video_title,
 		author: video.video_author,
 		time: video.video_total_time,
@@ -71,7 +71,16 @@ function getVideos(req, res){
 	catch(() => res.status(500).send(constants.errorMessage));
 }
 
+function getVideo(req, res){
+	Video.query().
+	select().
+	where('video_id', req.swagger.params.id.value).
+	then(video => res.status(200).send(formatVideoToSend(video[0]))).
+	catch(() => res.status(500).send(constants.errorMessage));
+}
+
 module.exports = {
 	manageVideoData: manageVideoData,
-	getVideos: getVideos
+	getVideos: getVideos,
+	getVideo: getVideo
 };

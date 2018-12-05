@@ -7,7 +7,7 @@ const constants = require('../helpers/constants');
 function formatAudioToSend(audio){
 	
 	return {
-		id: audio.id,
+		id: audio.audio_id,
 		title: audio.audio_title,
 		artist: audio.audio_artist,
 		selected: audio.audio_selected,
@@ -38,10 +38,20 @@ function manageAudioData(req, res){
 function getAudios(req, res){
 	Audio.query().
 	select().
-	then(audios => res.status(200).send(audios.map(audio => formatAudioToSend(audio))));
+	then(audios => res.status(200).send(audios.map(audio => formatAudioToSend(audio)))).
+	catch(() => res.status(500).send(constants.errorMessage));
+}
+
+function getAudio(req, res){
+	Audio.query().
+	select().
+	where('audio_id', req.swagger.params.id.value).
+	then(audio => res.status(200).send(formatAudioToSend(audio[0]))).
+	catch(() => res.status(500).send(constants.errorMessage));
 }
 
 module.exports = {
+	getAudio: getAudio,
 	getAudios: getAudios,
 	manageAudio: manageAudioData
 };
