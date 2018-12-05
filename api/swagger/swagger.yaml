@@ -421,7 +421,36 @@ paths:
             items:
               $ref: "#/definitions/Video"
         
-        500:
+        default:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-video-thumbnail:
+    x-swagger-router-controller: videoController
+    
+    get:
+      operationId: getThumbnail
+      description: Retrieves the video thumbnail
+      tags:
+        - admin site
+      produces:
+        - image/png
+        - image/jpeg
+      
+      parameters:
+        - in: query
+          name: id
+          type: integer
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            type: file
+        
+        default:
           description: Something went wrong.
           schema:
             $ref: "#/definitions/ResponseMessage"

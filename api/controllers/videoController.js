@@ -50,7 +50,7 @@ function insertVideo(params, thumbnail, res){
 	then(video => {
 		const toUpdate = {
 			id: video.id,
-			thumbnail: `${imagesPath}/thumbnail_video_${video.id}.${thumbnail.name.split('.').slice(-1)}`
+			thumbnail: `thumbnail_video_${video.id}.${thumbnail.name.split('.').slice(-1)}`
 		};
 		storeThumbnail(video.id, thumbnail);
 		updateVideo(toUpdate, null, res, true);
@@ -71,7 +71,23 @@ function getVideos(req, res){
 	catch(() => res.status(500).send(constants.errorMessage));
 }
 
+function getThumbnail(req, res){
+	Video.query().
+	select('video_thumbnail as path').
+	where('video_id', req.swagger.params.id.value).
+	then(foundVideo => {
+		
+		if (foundVideo.length > 0)
+			res.status(200).sendFile(`${__dirname}/${foundVideo[0].path}`);
+		
+		else
+			res.status(400).send({message: 'thumbnail not found'});
+	}).
+	catch(() => res.status(500).send(constants.errorMessage));
+}
+
 module.exports = {
 	manageVideoData: manageVideoData,
-	getVideos: getVideos
+	getVideos: getVideos,
+	getThumbnail: getThumbnail
 };
