@@ -38,7 +38,7 @@ function updateQuestion(question, res){
   then(rows => {
     
     if (rows)
-      res.status(200).send({id: question.question_id});
+      res.status(200).send({id: parseInt(question.question_id)});
     
     else
       res.status(500).send({message: "An error ocurred"});

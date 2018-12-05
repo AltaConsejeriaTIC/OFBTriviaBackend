@@ -64,5 +64,7 @@ exports.down = function(knex, Promise) {
 		knex.schema.dropTable('citizens'),
 		knex.schema.dropTable('questions'),
 		knex.schema.dropTable('admins'),
+		knex.schema.dropTable('audios'),
+		knex.schema.dropTable('videos'),
 	]);
 };
