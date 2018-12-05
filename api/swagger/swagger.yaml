@@ -93,6 +93,8 @@ definitions:
       score: 
         type: number
         format: float
+      winner:
+        type: integer
   
   WinnerInfo:
     type: object
