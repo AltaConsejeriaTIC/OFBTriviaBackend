@@ -96,6 +96,22 @@ definitions:
       winner:
         type: integer
   
+  User:
+    type: object
+    properties:
+      id: 
+        type: integer
+      name:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      cellphone:
+        type: string
+      contactPreference:
+        type: string
+  
   WinnerInfo:
     type: object
     properties:
@@ -146,10 +162,10 @@ definitions:
         type: [string, 'null']
       startDate:
         type: string
-        format: date
+        format: date-time
       endDate:
         type: string
-        format: date
+        format: date-time
       answer:
         type: string
       status:
@@ -221,6 +237,32 @@ paths:
           description: there's no trivia at the moment
           schema:
             $ref: "#/definitions/ResponseMessage"
+  
+  /get-user:
+    x-swagger-router-controller: citizenController
+    
+    get:
+      operationId: getUser
+      description: Retrieves the especifed user
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: id
+          type: integer
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            $ref: "#/definitions/User"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/User"
   
   /login:
     x-swagger-router-controller: adminController
@@ -455,6 +497,32 @@ paths:
           schema:
             $ref: "#/definitions/ResponseMessage"
   
+  /get-video:
+    x-swagger-router-controller: videoController
+    
+    get:
+      operationId: getVideo
+      description: Retrieves the specified video
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: id
+          type: integer
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            $ref: "#/definitions/Video"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
   /get-audios:
     x-swagger-router-controller: audioController
     
@@ -472,6 +540,32 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Audio"
+        
+        500:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-audio:
+    x-swagger-router-controller: audioController
+    
+    get:
+      operationId: getAudio
+      description: Retrieves the especified audio
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: id
+          type: integer
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            $ref: "#/definitions/Audio"
         
         500:
           description: Something went wrong.
