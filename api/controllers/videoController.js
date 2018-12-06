@@ -1,5 +1,3 @@
-
-
 'use strict';
 
 const Video = require('../models/Video');
@@ -78,7 +76,7 @@ function getThumbnail(req, res){
 	then(foundVideo => {
 		
 		if (foundVideo.length > 0)
-			res.status(200).sendFile(`${__dirname}/${foundVideo[0].path}`);
+			res.status(200).sendFile(`${imagesPath}/${foundVideo[0].path}`);
 		
 		else
 			res.status(400).send({message: 'thumbnail not found'});
