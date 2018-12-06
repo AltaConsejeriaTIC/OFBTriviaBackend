@@ -159,7 +159,7 @@ definitions:
       id:
         type: integer
       content:
-        type: [string, 'null']
+        type: string
       startDate:
         type: string
         format: date
@@ -360,12 +360,18 @@ paths:
           type: string
       
       responses:
+        
         200:
           description: ok
           schema:
             type: array
             items:
               $ref: "#/definitions/Question"
+        
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/ResponseMessage"
   
   /select-winners:
     x-swagger-router-controller: answerController

@@ -115,7 +115,14 @@ function getQuestionsList(req, res){
   limit(constants.questionsPerPage).
   offset(constants.questionsPerPage*(page - 1)).
   orderBy('endDate').
-  then(questions => res.status(200).send(questions));
+  then(questions => {
+    questions.map(question => {
+      question.startDate = question.startDate.toISOString().split('T')[0];
+      question.endDate = question.endDate.toISOString().split('T')[0];
+    });
+    res.status(200).send(questions);
+  }).
+  catch(() => res.status(500).send({message: "Error ocurred"}));
 }
 
 module.exports = {
