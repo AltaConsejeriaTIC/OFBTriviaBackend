@@ -106,7 +106,7 @@ function getQuestionsList(req, res){
   const page = req.swagger.params.page.value || 1;
   Question.query().
   select('question_id as id', 'question_content as content',
-         'question_created_date as startDate',
+         'question_start_date as startDate',
          'question_end_date as endDate',
          'question_status as status').
   whereRaw("" +
