@@ -11,7 +11,7 @@ function formatCitizenToSend(citizen){
 		id: citizen.citizen_id,
 		name: citizen.citizen_name,
 		lastName: citizen.citizen_last_name,
-		email: citizen.email,
+		email: citizen.citizen_email,
 		contactPreference: citizen.contact_media,
 		cellphone: citizen.citizen_cellphone
 	};
