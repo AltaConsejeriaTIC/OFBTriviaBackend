@@ -4,6 +4,7 @@ const queryHelpers = require('../helpers/queryHelpers');
 const Question = require('../models/Question');
 const constants = require('../helpers/constants');
 const knex = require('../../config/triviaDBConnection').knex;
+const helpers = require('../helpers/helpers');
 
 const dateComparatorStringBuilder = (dateField, booleanOperator, dateValue, sign) =>
   `(${dateField} ${booleanOperator} (date((${dateValue})) ${sign} ` +
@@ -18,12 +19,33 @@ const dateSubQueryBuilder = (dateField, id) =>
 const dateFiller = (question, dateField) => `'${question[dateField]}'` ||
       dateSubQueryBuilder(dateField, question.question_id);
 
+const fromDatetimeToDateFormat = dateTime => dateTime.toISOString().split('T')[0];
+
+function formatQuestionToSend(question){
+	
+	return {
+		id: question.question_id,
+    createdDate: fromDatetimeToDateFormat(question.question_created_date),
+    content: question.question_contet,
+    answer: question.question_real_answer,
+    startDate: fromDatetimeToDateFormat(question.question_start_date),
+    endDate: fromDatetimeToDateFormat(question.question_end_date),
+    status: question.question_status,
+    active: Boolean(question.question_active)
+	};
+}
+
 function getTriviaInfo(req, res) {
   queryHelpers.getCurrentQuestion.
-  then(question => res.json({
-    content: question[0].content,
-    endDate: question[0].endDate
-  }));
+  then(question => {
+    const result = (question.length > 0)? {
+      content: question[0].content,
+      endDate: question[0].endDate
+    } :
+    {};
+    res.status(200).send(result);
+  }).
+  catch();
 }
 
 function updateQuestion(question, res){
@@ -117,16 +139,30 @@ function getQuestionsList(req, res){
   orderBy('endDate').
   then(questions => {
     questions.map(question => {
-      question.startDate = question.startDate.toISOString().split('T')[0];
-      question.endDate = question.endDate.toISOString().split('T')[0];
+      question.startDate = fromDatetimeToDateFormat(question.startDate);
+      question.endDate = fromDatetimeToDateFormat(question.endDate);
     });
     res.status(200).send(questions);
   }).
   catch(() => res.status(500).send({message: "Error ocurred"}));
 }
 
+function getQuestion(req, res){
+  Question.query().
+  select().
+  where('question_id', req.swagger.params.id.value).
+  first().
+  then(question => {
+    const result = (question)? formatQuestionToSend(question) :
+          {};
+    res.status(200).send(result);
+  }).
+  catch(() => helpers.sendError(res));
+}
+
 module.exports = {
   getTriviaInfo: getTriviaInfo,
   manageQuestion: manageQuestion,
-  getQuestionsList: getQuestionsList
+  getQuestionsList: getQuestionsList,
+  getQuestion: getQuestion
 };

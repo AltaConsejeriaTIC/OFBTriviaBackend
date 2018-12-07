@@ -160,6 +160,9 @@ definitions:
         type: integer
       content:
         type: string
+      createdDate:
+        type: string
+        format: date
       startDate:
         type: string
         format: date
@@ -192,6 +195,27 @@ paths:
           description: A JSON object with question and timeToEnd
           schema:
             $ref: "#/definitions/QuestionInfo"
+  
+  /get-question:
+    x-swagger-router-controller: questionController
+    
+    get:
+      operationId: getQuestion
+      description: Retrieves the question of the trivia and the date that it ends.
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: id
+          type: integer
+      
+      responses:
+        
+        200:
+          description: A JSON object with question and timeToEnd
+          schema:
+            $ref: "#/definitions/Question"
   
   /winners:
     x-swagger-router-controller: citizenController

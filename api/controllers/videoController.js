@@ -39,7 +39,7 @@ function updateVideo(video, thumbnail, res, isANewVideo = false){
 		else
 			res.status(200).send({id: parseInt(video.id)});
 	}).
-	catch(() => res.status(500).send(constants.errorMessage));
+	catch(() => helpers.sendError(res));
 }
 
 function insertVideo(params, thumbnail, res){
@@ -53,7 +53,7 @@ function insertVideo(params, thumbnail, res){
 		storeThumbnail(video.id, thumbnail);
 		updateVideo(toUpdate, null, res, true);
 	}).
-	catch(() => res.status(500).send(constants.errorMessage));
+	catch(() => helpers.sendError(res));
 }
 
 function manageVideoData(req, res){
@@ -66,7 +66,7 @@ function getVideos(req, res){
 	Video.query().
 	select().
 	then(videos => res.status(200).send(videos.map(video => formatVideoToSend(video)))).
-	catch(() => res.status(500).send(constants.errorMessage));
+	catch(() => helpers.sendError(res));
 }
 
 function getThumbnail(req, res){
@@ -81,7 +81,7 @@ function getThumbnail(req, res){
 		else
 			res.status(400).send({message: 'thumbnail not found'});
 	}).
-	catch(() => res.status(500).send(constants.errorMessage));
+	catch(() => helpers.sendError(res));
 }
 
 function getVideo(req, res){
@@ -89,7 +89,7 @@ function getVideo(req, res){
 	select().
 	where('video_id', req.swagger.params.id.value).
 	then(video => res.status(200).send(formatVideoToSend(video[0]))).
-	catch(() => res.status(500).send(constants.errorMessage));
+	catch(() => helpers.sendError(res));
 }
 
 module.exports = {

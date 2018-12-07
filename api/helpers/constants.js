@@ -28,6 +28,16 @@ const audioFields = {
 	url: 'audio_url',
 	id: 'audio_id'
 };
+const questionFields = {
+	id: 'question_id',
+	createdDate: 'question_created_date',
+	content: 'question_contet',
+	answer: 'question_real_answer',
+	startDate: 'question_start_date',
+	endDate: 'question_end_date',
+	status: 'question_status',
+	active: 'question_active'
+};
 
 module.exports = {
 	videoFields: videoFields,
@@ -35,5 +45,6 @@ module.exports = {
 	audioFields: audioFields,
 	daysBetweenQuestions: daysBetweenQuestions,
 	questionsPerPage: questionsPerPage,
-	errorMessage: errorMessage
+	errorMessage: errorMessage,
+	questionsFields: questionFields
 };
