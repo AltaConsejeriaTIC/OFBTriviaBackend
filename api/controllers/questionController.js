@@ -130,7 +130,8 @@ function getQuestionsList(req, res){
   select('question_id as id', 'question_content as content',
          'question_start_date as startDate',
          'question_end_date as endDate',
-         'question_status as status').
+         'question_status as status',
+				 'question_real_answer as answer').
   whereRaw("" +
            (!req.swagger.params.lastId)? "true" :
            knex.raw("id > ?", req.swagger.params.lastId.value)).
