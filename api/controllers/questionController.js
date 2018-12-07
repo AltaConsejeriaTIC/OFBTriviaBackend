@@ -144,7 +144,7 @@ function getQuestionsList(req, res){
     });
     res.status(200).send(questions);
   }).
-  catch(() => res.status(500).send({message: "Error ocurred"}));
+  catch(() => helpers.sendError(res));
 }
 
 function getQuestion(req, res){
