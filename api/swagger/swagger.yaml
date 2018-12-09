@@ -129,15 +129,15 @@ definitions:
         type: string
       author:
         type: string
-      time:
-        type: number
-        format: float
       thumbnail:
         type: string
       url:
         type: string
       selected:
         type: boolean
+
+  VideoData:
+    type: object
   
   Audio:
     type: object
@@ -427,6 +427,28 @@ paths:
           schema:
             $ref: "#/definitions/ResponseMessage"
   
+  /getVideoData:
+    x-swagger-router-controller: videoController
+    
+    get:
+      operationId: getVideoData
+      summary: An object with content and time to end.
+      description: Retrieves the question of the trivia and the date that it ends.
+      tags:
+        - admin site
+      
+      parameters:
+        - in: query
+          name: id
+          type: string
+
+      responses:
+        
+        200:
+          description: A JSON object with question and timeToEnd
+          schema:
+            $ref: "#/definitions/VideoData"
+
   /upload-video:
     x-swagger-router-controller: videoController
     
