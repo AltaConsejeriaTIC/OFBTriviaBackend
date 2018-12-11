@@ -9,7 +9,6 @@ exports.up = function(knex, Promise) {
 			audios.boolean('audio_active').notNullable().defaultTo(true);
 		})
 	]);
-  
 };
 
 exports.down = function(knex, Promise) {

@@ -16,7 +16,7 @@ const adminFields = {
 const videoFields = {
 	id: 'video_id',
 	title: 'video_title',
-	author: 'video_author',
+	channel: 'video_author',
 	url: 'video_url',
 	time: 'video_total_time',
 	thumbnail: 'video_thumbnail',
