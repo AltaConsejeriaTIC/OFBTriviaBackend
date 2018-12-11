@@ -429,7 +429,7 @@ paths:
           schema:
             $ref: "#/definitions/ResponseMessage"
   
-  /getVideoData:
+  /get-video-data:
     x-swagger-router-controller: videoController
     
     get:
@@ -441,7 +441,7 @@ paths:
       
       parameters:
         - in: query
-          name: id
+          name: url
           type: string
 
       responses:
