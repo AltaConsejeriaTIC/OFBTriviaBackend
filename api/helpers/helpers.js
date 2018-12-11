@@ -2,7 +2,6 @@
 
 const bcrypt = require('bcrypt');
 const constants = require('../helpers/constants');
-const imagesPath = require('../../config/paths').imagesPath;
 
 const sendError = (res) => res.status(500).send(constants.errorMessage);
 const sendId = (res) => (newObject) => res.status(201).send({id: newObject.id});
@@ -53,16 +52,11 @@ function formatData(jsonData, tableColumns){
 	return data;
 }
 
-function storeFile(file, fileName){
-	file.mv(`${imagesPath}/${fileName}`);
-}
-
 module.exports = {
 	formatRawCitizenData: formatRawCitizenData,
 	formatAdminData: formatAdminData,
 	sendError: sendError,
 	formatData: formatData,
 	runFunctionByCondition: runFunctionByCondition,
-	sendId: sendId,
-	storeFile: storeFile
+	sendId: sendId
 };

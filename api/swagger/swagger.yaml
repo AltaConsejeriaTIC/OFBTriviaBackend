@@ -127,11 +127,13 @@ definitions:
         type: integer
       title:
         type: string
-      author:
+      channel:
         type: string
       thumbnail:
         type: string
       url:
+        type: string
+      time:
         type: string
       selected:
         type: boolean
@@ -459,26 +461,10 @@ paths:
         - admin site
       
       parameters:
-        - in: formData
-          name: thumbnail
-          type: file
-        - in: formData
-          name: title
-          type: string
-        - in: formData
-          name: author
-          type: string
-        - in: formData
-          name: time
-          type: number
-          format: float
-        - in: formData
-          name: url
-          type: string
-        - in: formData
-          name: id
-          type: integer
-          required: false
+        - in: body
+          name: video
+          schema:
+            $ref: "#/definitions/Video"
       
       responses:
         
@@ -514,35 +500,6 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Video"
-        
-        default:
-          description: Something went wrong.
-          schema:
-            $ref: "#/definitions/ResponseMessage"
-  
-  /get-video-thumbnail:
-    x-swagger-router-controller: videoController
-    
-    get:
-      operationId: getThumbnail
-      description: Retrieves the video thumbnail
-      tags:
-        - admin site
-      produces:
-        - image/png
-        - image/jpeg
-      
-      parameters:
-        - in: query
-          name: id
-          type: integer
-      
-      responses:
-        
-        200:
-          description: ok
-          schema:
-            type: file
         
         default:
           description: Something went wrong.
