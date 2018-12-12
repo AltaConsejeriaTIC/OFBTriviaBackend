@@ -26,7 +26,7 @@ function formatQuestionToSend(question){
 	return {
 		id: question.question_id,
     createdDate: fromDatetimeToDateFormat(question.question_created_date),
-    content: question.question_contet,
+    content: question.question_content,
     answer: question.question_real_answer,
     startDate: fromDatetimeToDateFormat(question.question_start_date),
     endDate: fromDatetimeToDateFormat(question.question_end_date),
@@ -135,6 +135,7 @@ function getQuestionsList(req, res){
   whereRaw("" +
            (!req.swagger.params.lastId)? "true" :
            knex.raw("id > ?", req.swagger.params.lastId.value)).
+	andWhere('question_active', true).
   limit(constants.questionsPerPage).
   offset(constants.questionsPerPage*(page - 1)).
   orderBy('endDate').
