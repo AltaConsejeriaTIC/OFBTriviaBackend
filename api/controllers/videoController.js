@@ -56,7 +56,7 @@ function getVideo(req, res){
 
 function getVideoData(req, res){
     youtube.videos.list({
-      id: youtube_parser(req.swagger.params.id.value),
+      id: youtube_parser(req.swagger.params.url.value),
       part: 'contentDetails, snippet'
     })
     .then((response) => {
