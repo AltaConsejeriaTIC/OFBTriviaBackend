@@ -52,11 +52,6 @@ function updateQuestion(question, res){
   Question.query().
   update(question).
   where('question_id', question.question_id).
-  andWhere(function(){
-      this.whereRaw(`date((${question.question_start_date})) <= ` +
-                    `date((${question.question_end_date}))`);  
-    }
-  ).
   then(rows => {
     
     if (rows)
@@ -69,7 +64,6 @@ function updateQuestion(question, res){
 }
 
 function insertQuestion(question, res){
-  
   if ((new Date(question.question_end_date)) >= (new Date(question.question_start_date)))
     Question.query().insert(question).
     then(question => {
@@ -110,6 +104,7 @@ function validateQuestionDates(question, questionOperation, dates, res){
 
 function manageQuestion(req, res){
   const question = {
+		question_active: req.body.active,
     question_content: req.body.content,
     question_start_date: req.body.startDate,
     question_end_date: req.body.endDate,
@@ -120,7 +115,8 @@ function manageQuestion(req, res){
     startDate: dateFiller(question, 'question_start_date'),
     endDate: dateFiller(question, 'question_end_date'),
   };
-  const questionOperation = question.id? updateQuestion : insertQuestion;
+	console.log(question);
+  const questionOperation = (question.question_id)? updateQuestion : insertQuestion;
   validateQuestionDates(question, questionOperation, dates, res);
 }
 
