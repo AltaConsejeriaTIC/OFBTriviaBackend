@@ -1,6 +1,5 @@
 'use strict';
 
-const queryHelpers = require('../helpers/queryHelpers');
 const Question = require('../models/Question');
 const constants = require('../helpers/constants');
 const knex = require('../../config/triviaDBConnection').knex;
@@ -33,19 +32,6 @@ function formatQuestionToSend(question){
     status: question.question_status,
     active: Boolean(question.question_active)
 	};
-}
-
-function getTriviaInfo(req, res) {
-  queryHelpers.getCurrentQuestion.
-  then(question => {
-    const result = (question.length > 0)? {
-      content: question[0].content,
-      endDate: question[0].endDate
-    } :
-    {};
-    res.status(200).send(result);
-  }).
-  catch();
 }
 
 function updateQuestion(question, res){
@@ -115,7 +101,6 @@ function manageQuestion(req, res){
     startDate: dateFiller(question, 'question_start_date'),
     endDate: dateFiller(question, 'question_end_date'),
   };
-	console.log(question);
   const questionOperation = (question.question_id)? updateQuestion : insertQuestion;
   validateQuestionDates(question, questionOperation, dates, res);
 }
@@ -159,7 +144,6 @@ function getQuestion(req, res){
 }
 
 module.exports = {
-  getTriviaInfo: getTriviaInfo,
   manageQuestion: manageQuestion,
   getQuestionsList: getQuestionsList,
   getQuestion: getQuestion

@@ -20,13 +20,16 @@ const videoFields = {
 	url: 'video_url',
 	time: 'video_total_time',
 	thumbnail: 'video_thumbnail',
-	selected: 'video_selected'
+	selected: 'video_selected',
+	active: 'video_active'
 };
 const audioFields = {
 	title: 'audio_title',
 	artist: 'audio_artist',
 	url: 'audio_url',
-	id: 'audio_id'
+	id: 'audio_id',
+	selected: 'audio_selected',
+	active: 'audio_active'
 };
 const questionFields = {
 	id: 'question_id',

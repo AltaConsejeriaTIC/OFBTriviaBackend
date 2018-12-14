@@ -14,6 +14,7 @@ function formatVideoToSend(video){
     time: video.video_total_time,
     selected: Boolean(video.video_selected),
     url: video.video_url,
+    active: Boolean(video.video_active),
     thumbnail: video.video_thumbnail || ''
   };
 }

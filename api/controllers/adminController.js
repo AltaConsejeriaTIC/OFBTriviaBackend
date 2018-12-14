@@ -41,7 +41,7 @@ function registerAdmin(req, res){
     else
       res.status(500).send({message: "Error on creating admin"});
   }).
-  catch(e => console.log(e));
+  catch(() => helpers.sendError(res));
 }
 
 module.exports = {

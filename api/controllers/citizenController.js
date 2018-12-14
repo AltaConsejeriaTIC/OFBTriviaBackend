@@ -40,13 +40,13 @@ function processCitizen(params, questionId, insertAnswer, manageAnswer, res){
       updateCitizen(citizen[0].citizen_id, params).
       then(() => manageAnswer(citizen[0].citizen_id, questionId, params.answer,
                               'user updated', res)).
-      catch(e => console.log(e));
+			catch(() => helpers.sendError(res));
     }
 		else
 			insertCitizen(params).
       then(newCitizen => insertAnswer(newCitizen.id, questionId,
                                       {answer_content: params.answer}, 'user created', res)).
-      catch(e => console.log(e));
+			catch(() => helpers.sendError(res));
 	});
 }
 
@@ -72,7 +72,8 @@ function getWinners(req, res) {
       {};
     
     res.status(200).send(result);
-  });
+  }).
+  catch(() => helpers.sendError(res));
 }
 
 function getCitizen(req, res){
