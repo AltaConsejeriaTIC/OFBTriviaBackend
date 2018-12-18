@@ -30,7 +30,8 @@ function formatQuestionToSend(question){
     startDate: fromDatetimeToDateFormat(question.question_start_date),
     endDate: fromDatetimeToDateFormat(question.question_end_date),
     status: question.question_status,
-    active: Boolean(question.question_active)
+    active: Boolean(question.question_active),
+		answersCount: question.answers_qty
 	};
 }
 
@@ -44,9 +45,9 @@ function updateQuestion(question, res){
       res.status(200).send({id: parseInt(question.question_id)});
     
     else
-      res.status(500).send({message: "An error ocurred"});
+			helpers.sendError(res);
   }).
-  catch(() => res.status(500).send({message: "An error ocurred"}));
+  catch(() => helpers.sendError(res));
 }
 
 function insertQuestion(question, res){
@@ -58,9 +59,9 @@ function insertQuestion(question, res){
         res.status(201).send({id: question.id});
       
       else
-        res.status(500).send({message: "An error ocurred"});
+        helpers.sendError(res);
     }).
-    catch(() => res.status(500).send({message: "An error ocurred"}));
+    catch(() => helpers.sendError(res));
   
   else
     res.status(412).send({message: "Dates not allowed"});
@@ -74,7 +75,8 @@ function validateQuestionDates(question, questionOperation, dates, res){
                                   dates.startDate, '-')}
     or ${dateComparatorStringBuilder('question_start_date', '>',
                                      dates.endDate, '+')}
-  )`);
+  )`).
+	andWhere('question_active', true);
   questionValidator = (!question.question_id)? questionValidator :
     questionValidator.andWhere('question_id', '!=', question.question_id);
   questionValidator.
@@ -113,21 +115,24 @@ function getQuestionsList(req, res){
          'question_end_date as endDate',
          'question_status as status',
 				 'question_real_answer as answer').
+	count('answers.answer_question as answersCount').
+	joinRelation('answers').
   whereRaw("" +
            (!req.swagger.params.lastId)? "true" :
            knex.raw("id > ?", req.swagger.params.lastId.value)).
 	andWhere('question_active', true).
+	groupBy('answers.answer_question').
   limit(constants.questionsPerPage).
   offset(constants.questionsPerPage*(page - 1)).
   orderBy('endDate').
-  then(questions => {
+	then(questions => {
     questions.map(question => {
       question.startDate = fromDatetimeToDateFormat(question.startDate);
       question.endDate = fromDatetimeToDateFormat(question.endDate);
     });
     res.status(200).send(questions);
   }).
-  catch(() => helpers.sendError(res));
+	catch(() => helpers.sendError(res));
 }
 
 function getQuestion(req, res){

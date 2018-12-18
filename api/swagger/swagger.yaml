@@ -145,6 +145,8 @@ definitions:
         type: string
       status:
         type: string
+      answersCount:
+        type: number
       active:
         type: boolean
       
