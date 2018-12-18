@@ -16,6 +16,45 @@ basePath: /trivia
 
 definitions:
   
+  QuestionInfo:
+    type: object
+    properties:
+      content:
+        type: [string, 'null']
+      endDate:
+        type: [string, 'null']
+  SendNotification:
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+  Winners:
+    type: object
+    properties:
+      date:
+        type: string
+      winners:
+        type: array
+        items:
+          type: string
+  
+  CitizenAnswer:
+    type: object
+    properties:
+      name:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      cellphone:
+        type: string
+      contactPreference:
+        type: string
+      answer:
+        type: string
+  
   Credentials:
     type: object
     properties:
@@ -124,7 +163,7 @@ definitions:
         type: boolean
       active:
         type: boolean
-  
+
   Question:
     type: object
     properties:
@@ -149,7 +188,43 @@ definitions:
         type: boolean
       
   
-paths:  
+paths:
+  /token/{token}:
+      x-swagger-router-controller: notificationController
+      get:
+        description: add new valid token
+        operationId: addToken
+        parameters:
+          - name: token
+            type: string
+            in: path
+            required: true
+        tags:
+          - "get token"
+        responses:
+          "200":
+            description: Success
+            schema:
+              type: string
+  /send:
+     x-swagger-router-controller: notificationController
+     post:
+       description: send push notification
+       operationId: send
+       parameters:
+         - in: body
+           name: sendForm
+           description: send form
+           required: true
+           schema:
+             $ref: "#/definitions/SendNotification"
+       tags:
+         - "get token"
+       responses:
+         "200":
+           description: Success
+           schema:
+             type: string
 
   /get-question:
     x-swagger-router-controller: questionController
@@ -231,12 +306,12 @@ paths:
           description: wrong credentials
           schema:
             $ref: "#/definitions/ResponseMessage"
-        
+
         default:
           description: wrong credentials
           schema:
             $ref: "#/definitions/ResponseMessage"
-  
+
   /register:
     x-swagger-router-controller: adminController
     
@@ -280,19 +355,19 @@ paths:
           required: true
       
       responses:
-        
+
         200:
           description: ok
           schema:
             type: array
             items:
               $ref: "#/definitions/AnswerInfo"
-        
+
         default:
           description: Something went wrong.
           schema:
             $ref: "#/definitions/User"
-  
+
   /questions-list:
     x-swagger-router-controller: questionController
   
@@ -375,7 +450,7 @@ paths:
           description: A JSON object with question and timeToEnd
           schema:
             $ref: "#/definitions/VideoData"
-        
+
         default:
           description: Something went wrong.
           schema:
@@ -569,7 +644,7 @@ paths:
           description: ok
           schema:
             $ref: "#/definitions/Question"
-        
+
         default:
           description: Something went wrong.
           schema:

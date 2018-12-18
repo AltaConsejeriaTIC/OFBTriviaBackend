@@ -13,13 +13,13 @@ module.exports = {
   },
 
   production: {
-    client: '',
+    client: 'mysql',
     connection: {
-      host: '',
-      port: '',
-      user: '',
-      password: '',
-      database: ''
+      host: '165.227.254.52',
+      port: '3306',
+      user: 'root',
+      password: 'root',
+      database: 'filarmon_trivia'
     }
   }
 };
