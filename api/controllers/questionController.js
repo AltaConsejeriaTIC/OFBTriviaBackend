@@ -1,6 +1,7 @@
 'use strict';
 
 const Question = require('../models/Question');
+const Answer = require('../models/Answer');
 const constants = require('../helpers/constants');
 const knex = require('../../config/triviaDBConnection').knex;
 const helpers = require('../helpers/helpers');
@@ -109,19 +110,22 @@ function manageQuestion(req, res){
 
 function getQuestionsList(req, res){
   const page = req.swagger.params.page.value || 1;
+	const answersCount = Answer.query().
+			count('answer_question').
+			where('answer_question', knex.raw('??', ['question_id'])).
+			as('answers_qty');
   Question.query().
   select('question_id as id', 'question_content as content',
          'question_start_date as startDate',
          'question_end_date as endDate',
          'question_status as status',
-				 'question_real_answer as answer').
-	count('answers.answer_question as answersCount').
-	joinRelation('answers').
+				 'question_real_answer as answer',
+				 answersCount
+				 ).
   whereRaw("" +
            (!req.swagger.params.lastId)? "true" :
            knex.raw("id > ?", req.swagger.params.lastId.value)).
 	andWhere('question_active', true).
-	groupBy('answers.answer_question').
   limit(constants.questionsPerPage).
   offset(constants.questionsPerPage*(page - 1)).
   orderBy('endDate').
