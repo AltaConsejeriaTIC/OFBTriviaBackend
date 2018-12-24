@@ -23,12 +23,14 @@ definitions:
         type: [string, 'null']
       endDate:
         type: [string, 'null']
+  
   SendNotification:
       properties:
         title:
           type: string
         body:
           type: string
+  
   Winners:
     type: object
     properties:

@@ -22,7 +22,7 @@ const dateFiller = (question, dateField) => `'${question[dateField]}'` ||
 const fromDatetimeToDateFormat = dateTime => dateTime.toISOString().split('T')[0];
 
 function formatQuestionToSend(question){
-	
+	console.log(question);
 	return {
 		id: question.question_id,
     createdDate: fromDatetimeToDateFormat(question.question_created_date),
@@ -113,7 +113,7 @@ function getQuestionsList(req, res){
 	const answersCount = Answer.query().
 			count('answer_question').
 			where('answer_question', knex.raw('??', ['question_id'])).
-			as('answers_qty');
+			as('answersCount');
   Question.query().
   select('question_id as id', 'question_content as content',
          'question_start_date as startDate',
