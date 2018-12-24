@@ -1,7 +1,6 @@
 'use strict';
 
 const Answer = require('../models/Answer');
-const Citizen = require('../models/Citizen');
 const sendError = require('../helpers/helpers').sendError;
 const knex = require('../../config/triviaDBConnection').knex;
 
@@ -44,21 +43,7 @@ function selectWinners(req, res){
 	});
 }
 
-function getContactInfo(req, res){
-	Citizen.query().
-	select('citizen_email as email',
-				 'citizen_cellphone as cellphone',
-				 'citizen_name as name',
-				 'citizen_last_name as lastName',
-				 'citizen_contact_media as contactPreference').
-	joinRelation('[answers]').
-	where('answers.answer_question', req.swagger.params.questionId.value).
-	then(citizensInfo => res.status(200).send(citizensInfo)).
-	catch(() => sendError(res));
-}
-
 module.exports = {
 	getAnswersList: getAnswersList,
-	selectWinners: selectWinners,
-	getContactInfo: getContactInfo
+	selectWinners: selectWinners
 };

@@ -572,7 +572,7 @@ paths:
             $ref: "#/definitions/ResponseMessage"
   
   /get-contact-info:
-    x-swagger-router-controller: answerController
+    x-swagger-router-controller: citizenController
     
     get:
       operationId: getContactInfo
