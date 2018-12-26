@@ -16,44 +16,12 @@ basePath: /trivia
 
 definitions:
   
-  QuestionInfo:
-    type: object
-    properties:
-      content:
-        type: [string, 'null']
-      endDate:
-        type: [string, 'null']
   SendNotification:
       properties:
         title:
           type: string
         body:
           type: string
-  Winners:
-    type: object
-    properties:
-      date:
-        type: string
-      winners:
-        type: array
-        items:
-          type: string
-  
-  CitizenAnswer:
-    type: object
-    properties:
-      name:
-        type: string
-      lastName:
-        type: string
-      email:
-        type: string
-      cellphone:
-        type: string
-      contactPreference:
-        type: string
-      answer:
-        type: string
   
   Credentials:
     type: object
@@ -188,6 +156,21 @@ definitions:
         type: number
       active:
         type: boolean
+  
+  ContactInfo:
+    type: object
+    properties:
+      name:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      cellphone:
+        type: string
+      contactPreference:
+        type: string
+    
       
   
 paths:
@@ -582,6 +565,34 @@ paths:
           description: ok
           schema:
             $ref: "#/definitions/Audio"
+        
+        default:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+  
+  /get-contact-info:
+    x-swagger-router-controller: citizenController
+    
+    get:
+      operationId: getContactInfo
+      description: Retrieves the contact info for the answers of the given question.
+      tags:
+        - answers
+      
+      parameters:
+        - in: query
+          name: questionId
+          type: integer
+      
+      responses:
+        
+        200:
+          description: ok
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ContactInfo"
         
         default:
           description: Something went wrong.
