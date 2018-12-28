@@ -3,7 +3,7 @@ info:
   version: 0.0.1
   title: Trivia OFB
 # during dev, should point to your local machine
-host: 138.121.200.234:10011
+host: localhost:10011
 schemes:
   - http
 consumes:
