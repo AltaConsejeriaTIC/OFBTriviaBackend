@@ -3,7 +3,7 @@ info:
   version: 0.0.1
   title: Trivia OFB
 # during dev, should point to your local machine
-host: localhost:10011
+host: 138.121.200.234:10011
 schemes:
   - http
 consumes:
@@ -15,13 +15,6 @@ basePath: /trivia
 
 
 definitions:
-  
-  SendNotification:
-      properties:
-        title:
-          type: string
-        body:
-          type: string
   
   Credentials:
     type: object
@@ -174,42 +167,6 @@ definitions:
       
   
 paths:
-  /token/{token}:
-      x-swagger-router-controller: notificationController
-      get:
-        description: add new valid token
-        operationId: addToken
-        parameters:
-          - name: token
-            type: string
-            in: path
-            required: true
-        tags:
-          - "get token"
-        responses:
-          "200":
-            description: Success
-            schema:
-              type: string
-  /send:
-     x-swagger-router-controller: notificationController
-     post:
-       description: send push notification
-       operationId: send
-       parameters:
-         - in: body
-           name: sendForm
-           description: send form
-           required: true
-           schema:
-             $ref: "#/definitions/SendNotification"
-       tags:
-         - "get token"
-       responses:
-         "200":
-           description: Success
-           schema:
-             type: string
 
   /get-question:
     x-swagger-router-controller: questionController
