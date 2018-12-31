@@ -662,3 +662,26 @@ paths:
           description: Something went wrong.
           schema:
             $ref: "#/definitions/ResponseMessage"
+  
+  
+  
+  /update-questions-states:
+    x-swagger-router-controller: questionController
+    
+    get:
+      operationId: updateQuestionsStates
+      description: updates the states of the questions aacording their case.
+      tags:
+        - questions
+      
+      responses:
+        
+        200:
+          description: ok.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
+
+        default:
+          description: Something went wrong.
+          schema:
+            $ref: "#/definitions/ResponseMessage"
