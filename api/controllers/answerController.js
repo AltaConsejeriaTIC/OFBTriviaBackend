@@ -3,6 +3,7 @@
 const Answer = require('../models/Answer');
 const sendError = require('../helpers/helpers').sendError;
 const knex = require('../../config/triviaDBConnection').knex;
+const {markQuestionAsSelectedWinners} = require('./questionController');
 
 function updateAnswer(citizenId, questionId, answer){
 	
@@ -34,7 +35,7 @@ function selectWinners(req, res){
 		Promise.all(updates).
 		then(() => {
 			trx.commit();
-			res.status(200).send({message: "Transaction done."});
+			markQuestionAsSelectedWinners(req.body.questionId, trx, res);
 		}).
 		catch(() => {
 			trx.rollback();
