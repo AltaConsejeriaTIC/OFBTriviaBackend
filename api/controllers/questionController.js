@@ -5,6 +5,7 @@ const Answer = require('../models/Answer');
 const constants = require('../helpers/constants');
 const knex = require('../../config/triviaDBConnection').knex;
 const helpers = require('../helpers/helpers');
+const cron = require('node-cron');
 
 const dateComparatorStringBuilder = (dateField, booleanOperator, dateValue, sign) =>
   `(${dateField} ${booleanOperator} (date((${dateValue})) ${sign} ` +
@@ -114,7 +115,8 @@ function getQuestionsList(req, res){
 			count('answer_question').
 			where('answer_question', knex.raw('??', ['question_id'])).
 			as('answersCount');
-  Question.query().
+  Question.
+	query().
   select('question_id as id', 'question_content as content',
          'question_start_date as startDate',
          'question_end_date as endDate',
@@ -152,8 +154,97 @@ function getQuestion(req, res){
   catch(() => helpers.sendError(res));
 }
 
+function setQuestionAsFinished(){
+	
+	return Question.
+	query().
+	whereRaw('question_end_date <= CURDATE() - 3').
+	andWhere(function() {
+		this.
+		where('question_status', 'Pendiente publicacion ganadores').
+		orWhere('question_status', 'Mostrando ganadores');
+	}).
+	update({'question_status': 'Terminada'});
+}
+
+function setQuestionAsShowingWinners(){
+	
+	return Question.
+	query().
+	whereRaw('question_end_date = CURDATE() - 1').
+	andWhere('question_selected_winners', true).
+	andWhere('question_status', 'Publicada').
+	update({'question_status': 'Mostrando ganadores'});
+}
+
+function setQuestionAsPendingWinners(){
+	
+	return Question.
+	query().
+	whereRaw('question_end_date = CURDATE() - 1').
+	andWhere('question_selected_winners', false).
+	andWhere('question_status', 'Publicada').
+	update({'question_status': 'Pendiente publicacion ganadores'});
+}
+
+function setQuestionAsPublished(){
+	
+	return Question.
+	query().
+	whereRaw('question_start_date <= CURDATE()').
+	andWhere(function(){
+		this.whereRaw('question_end_date >= CURDATE()');
+	}).
+	andWhere('question_status', 'Programada').
+	update({'question_status': 'Publicada'});
+}
+
+function updateQuestionsStates(req = null, res = null){
+	knex.
+	transaction(trx => {
+		const updates = [
+			setQuestionAsPublished().transacting(trx),
+			setQuestionAsPendingWinners().transacting(trx),
+			setQuestionAsShowingWinners().transacting(trx),
+			setQuestionAsFinished().transacting(trx)
+		];
+		
+		Promise.all(updates).
+		then(() => {
+			trx.commit();
+			
+			if (res)
+				res.status(200).send({message: "Transaction done."});
+		}).
+		catch(e => {
+			trx.rollback();
+			console.log(e);
+			if (res){
+				helpers.sendError(res);
+			}
+		});
+	});
+}
+
+cron.schedule('0 0 * * *', () => {
+	updateQuestionsStates(null, null);
+});
+
+function markQuestionAsSelectedWinners(questionId, transaction, res){
+	Question.
+	query().
+	update({'question_selected_winners': 1}).
+	where('question_id', questionId).
+	then(() => {
+			res.status(200).send({message: "Transaction done."});
+	}).
+	catch(() => helpers.sendError(res));
+}
+
 module.exports = {
   manageQuestion: manageQuestion,
   getQuestionsList: getQuestionsList,
-  getQuestion: getQuestion
+  getQuestion: getQuestion,
+	markQuestionAsSelectedWinners: markQuestionAsSelectedWinners,
+	updateQuestionsStates: updateQuestionsStates
 };
