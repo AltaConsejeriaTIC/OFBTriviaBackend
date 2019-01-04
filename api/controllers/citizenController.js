@@ -86,13 +86,14 @@ function getCitizen(req, res){
 
 function getContactInfo(req, res){
 	Citizen.query().
-	select('citizen_email as email',
-				 'citizen_cellphone as cellphone',
+	distinct('citizen_email as email').
+	select('citizen_cellphone as cellphone',
 				 'citizen_name as name',
 				 'citizen_last_name as lastName',
 				 'citizen_contact_media as contactPreference').
 	joinRelation('[answers]').
-	where('answers.answer_question', req.swagger.params.questionId.value).
+	where('citizen_contact_media', 'email').
+	orderBy('answer_date', 'DESC').
 	then(citizensInfo => res.status(200).send(citizensInfo)).
 	catch(() => helpers.sendError(res));
 }
