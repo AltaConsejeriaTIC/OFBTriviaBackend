@@ -226,7 +226,7 @@ function updateQuestionsStates(req = null, res = null){
 	});
 }
 
-cron.schedule('0 0 * * *', () => {
+cron.schedule('0 * * * *', () => {
 	updateQuestionsStates(null, null);
 });
 
