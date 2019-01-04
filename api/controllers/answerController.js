@@ -41,7 +41,7 @@ function selectWinners(req, res){
 		Promise.all(updates).
 		then(() => {
 			trx.commit();
-			markQuestionAsSelectedWinners(req.body.questionId, trx, res);
+			markQuestionAsSelectedWinners(req.body[0].questionId, trx, res);
 		}).
 		catch(() => {
 			trx.rollback();
