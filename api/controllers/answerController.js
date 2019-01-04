@@ -20,7 +20,12 @@ function getAnswersList(req, res){
 	where('answer_question', req.swagger.params.questionId.value).
 	orderBy('score', 'DESC').
 	orderBy('date').
-	then(answers => res.status(200).send(answers)).
+	then(answers => {
+		answers.map(answer => {
+			answer.date.setTime(answer.date.getTime() - answer.date.getTimezoneOffset()*60*1000);
+		});
+		res.status(200).send(answers);
+	}).
   catch(() => sendError(res));
 }
 
