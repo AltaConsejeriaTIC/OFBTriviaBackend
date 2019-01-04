@@ -18,6 +18,7 @@ function getAnswersList(req, res){
 	select('answer_citizen as userId', 'answer_content as content',
 				 'answer_date as date', 'answer_score as score', 'answer_winner as winner').
 	where('answer_question', req.swagger.params.questionId.value).
+	orderBy('score', 'DESC').
 	orderBy('date').
 	then(answers => res.status(200).send(answers)).
   catch(() => sendError(res));
