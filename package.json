@@ -10,7 +10,7 @@
   "dependencies": {
     "bcrypt": "^3.0.2",
     "express": "^4.12.3",
-    "express-fileupload": "^1.0.0",
+    "express-fileupload": "^1.1.9",
     "fcm-node": "^1.3.0",
     "googleapis": "^36.0.0",
     "jsonwebtoken": "^8.4.0",
